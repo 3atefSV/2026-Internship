@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# C++
+build/
+*.o
+*.obj
+*.exe
+*.dll
+*.lib
+*.pdb
+*.a
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+# Visual Studio
+.vs/
+*.VC.db
+*.VC.opendb
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
