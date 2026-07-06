@@ -27,8 +27,18 @@ target_link_libraries(test_tensor_arithmetic
         GTest::gtest_main
 )
 
+add_executable(test_tensor_matmul
+    test_tensor_matmul.cpp
+)
+
+target_link_libraries(test_tensor_matmul
+    PRIVATE
+        Tensor
+        GTest::gtest_main
+)
 
 include(GoogleTest)
 
 gtest_discover_tests(test_tensor_properties)
 gtest_discover_tests(test_tensor_arithmetic)
+gtest_discover_tests(test_tensor_matmul)

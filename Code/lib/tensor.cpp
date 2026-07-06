@@ -146,3 +146,67 @@ Tensor Tensor::operator/(const float scalar) const
     }
     return Tensor(resultData, shape);
 }
+
+float& Tensor::operator()(size_t row, size_t col) 
+{
+    if (shape.size() != 2) 
+    {
+        throw std::invalid_argument("Tensor is not 2D.");
+    }
+    if (row >= shape[0] || col >= shape[1]) 
+    {
+        throw std::out_of_range("Index out of bounds.");
+    }
+    return data[row * shape[1] + col];
+}
+
+const float& Tensor::operator()(size_t row, size_t col) const 
+{
+    if (shape.size() != 2) 
+    {
+        throw std::invalid_argument("Tensor is not 2D.");
+    }
+    if (row >= shape[0] || col >= shape[1]) 
+    {
+        throw std::out_of_range("Index out of bounds.");
+    }
+    return data[row * shape[1] + col];
+}
+
+Tensor Tensor::matmul(const Tensor& other) const
+{
+    if (shape.size() != 2 || other.shape.size() != 2)
+    {
+        throw std::invalid_argument("Matrix multiplication supports only 2D tensors.");
+    }
+
+    size_t rowsA = shape[0];
+    size_t colsA = shape[1];
+
+    size_t rowsB = other.shape[0];
+    size_t colsB = other.shape[1];
+
+    if (colsA != rowsB)
+    {
+        throw std::invalid_argument("Matrix dimensions are incompatible.");
+    }
+
+    std::vector<float> result(rowsA * colsB, 0.0f);
+
+    for (size_t i = 0; i < rowsA; ++i)
+    {
+        for (size_t j = 0; j < colsB; ++j)
+        {
+            float sum = 0.0f;
+
+            for (size_t k = 0; k < colsA; ++k)
+            {
+                sum += (*this)(i, k) * other(k, j);
+            }
+
+            result[i * colsB + j] = sum;
+        }
+    }
+
+    return Tensor(result, {rowsA, colsB});
+}

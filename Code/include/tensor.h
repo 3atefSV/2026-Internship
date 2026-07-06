@@ -29,7 +29,13 @@ class Tensor {
         Tensor operator-(const float scalar) const; // subtract a scalar from each element of the tensor
         Tensor operator*(const float scalar) const; // multiply each element of the tensor by a scalar
         Tensor operator/(const float scalar) const; // divide each element of the tensor by a scalar
-    
+
+        // element access (2d)
+        float& operator()(size_t row , size_t col); // access element by index (non-const)
+        const float& operator()(size_t row, size_t col) const; // for const access  function
+
+        // matrix multiplication
+        Tensor matmul(const Tensor& other) const;
 
     private:
         std::vector<float> data; // data of the tensor
