@@ -17,11 +17,11 @@ target_link_libraries(test_tensor_properties
         GTest::gtest_main
 )
 
-add_executable(test_tensor_arithmetic_addition
-    test_tensor_arithmetic_addition.cpp
+add_executable(test_tensor_arithmetic
+    test_tensor_arithmetic.cpp
 )
 
-target_link_libraries(test_tensor_arithmetic_addition
+target_link_libraries(test_tensor_arithmetic
     PRIVATE
         Tensor
         GTest::gtest_main
@@ -31,4 +31,4 @@ target_link_libraries(test_tensor_arithmetic_addition
 include(GoogleTest)
 
 gtest_discover_tests(test_tensor_properties)
-gtest_discover_tests(test_tensor_arithmetic_addition)
+gtest_discover_tests(test_tensor_arithmetic)

@@ -18,9 +18,18 @@ class Tensor {
         std::string dtype() const; // get the data type of the tensor (currently only float is supported)
         bool isEmpty() const; // check if the tensor is empty
         
-        // Arithmetic operations
+        // Arithmetic operations with Tensor
         Tensor operator+(const Tensor& other) const; // element-wise addition
+        Tensor operator-(const Tensor& other) const; // element-wise subtraction
+        Tensor operator*(const Tensor& other) const; // element-wise multiplication
+        Tensor operator/(const Tensor& other) const; // element-wise division
+
+        // Arithmetic operations with scalar
         Tensor operator+(const float scalar) const; // add a scalar to each element of the tensor
+        Tensor operator-(const float scalar) const; // subtract a scalar from each element of the tensor
+        Tensor operator*(const float scalar) const; // multiply each element of the tensor by a scalar
+        Tensor operator/(const float scalar) const; // divide each element of the tensor by a scalar
+    
 
     private:
         std::vector<float> data; // data of the tensor
