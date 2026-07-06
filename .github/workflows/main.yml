@@ -47,7 +47,7 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compile: llvm
-          cmake: "3.16"
+          cmake: true
           ninja: true
 
       - name: Config CMake files
