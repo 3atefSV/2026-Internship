@@ -17,6 +17,10 @@ class Tensor {
         size_t getNumDimensions() const; // get the number of dimensions of the tensor
         std::string dtype() const; // get the data type of the tensor (currently only float is supported)
         bool isEmpty() const; // check if the tensor is empty
+        
+        // Arithmetic operations
+        Tensor operator+(const Tensor& other) const; // element-wise addition
+        Tensor operator+(const float scalar) const; // add a scalar to each element of the tensor
 
     private:
         std::vector<float> data; // data of the tensor

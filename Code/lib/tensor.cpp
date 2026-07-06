@@ -1,4 +1,5 @@
 #include "tensor.h"
+#include <stdexcept>
 
 Tensor::Tensor() 
 {
@@ -37,4 +38,31 @@ std::string Tensor::dtype() const
 bool Tensor::isEmpty() const 
 {
     return data.empty(); 
+}
+
+Tensor Tensor::operator+(const Tensor& other) const 
+{
+    if (shape != other.shape) 
+    {
+        throw std::invalid_argument("Shapes of tensors do not match for addition.");
+    }
+
+    std :: vector<float> resultData(data.size());
+    for (size_t i = 0; i < data.size(); ++i) 
+    {
+        resultData[i] = data[i] + other.data[i];
+    }
+
+    return Tensor(resultData, shape);
+}
+
+Tensor Tensor::operator+(const float scalar) const 
+{
+    std::vector<float> resultData(data.size());
+    for (size_t i = 0; i < data.size(); ++i) 
+    {
+        resultData[i] = data[i] + scalar;
+    }
+
+    return Tensor(resultData, shape);
 }
