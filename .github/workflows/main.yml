@@ -1,0 +1,64 @@
+name: CI C+=
+
+on:
+  push:
+    branches: ["main","Tensor/*"]
+    paths-ignore:
+      - 'docs/*'
+      - '*.md'
+      - 'LICENSE'
+      - 'Documentation/**'
+
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - 'Documentation/**'
+        
+jobs:
+  Testing_foramting:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        path:
+          - Code/lib
+          - Code/include
+          - Code/tests
+    steps:
+      - name: Checkout Repositorry
+        uses: actions/checkout@v5
+
+      - name: Run clang-format style check for C++ programs.
+        uses: jidicula/clang-format-action@v4.18.0
+        with:
+          clang-format-version: '18'
+          check-path: ${{ matrix.path }}
+
+
+  Testing_building:
+    runs-on: ubuntu-latest
+    needs: Testing_foramting
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup building tools C=+
+        uses: aminya/setup-cpp@v1
+        with:
+          compile: llvm
+          cmake: "3.16"
+          ninja: true
+
+      - name: Config CMake files
+        run: |
+          cmake -S Code -B Code/build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+  
+      - name: Building
+        run: |
+          cmake --build Code/build --parallel
+          
+      - name: Run Tests
+        working_directory: Code/build
+        run: |
+          ctest --output-on-failure --verbose
+
