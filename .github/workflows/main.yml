@@ -59,7 +59,7 @@ jobs:
           cmake --build Code/build --parallel
           
       - name: Run Tests
-        working_directory: Code/build
+        working-directory: Code/build
         run: |
           ctest --output-on-failure --verbose
 
