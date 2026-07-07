@@ -7,7 +7,7 @@
 class Tensor {
 public:
   // constructor
-  Tensor(); // default constructor
+  Tensor() = default; // default constructor
   Tensor(const std::vector<float> &data,
          const std::vector<size_t> &shape); // constructor with data and shape
 

@@ -1,7 +1,6 @@
 #include "tensor.h"
 #include <stdexcept>
 
-Tensor::Tensor() {}
 
 Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape)
     : data(data), shape(shape) {}
