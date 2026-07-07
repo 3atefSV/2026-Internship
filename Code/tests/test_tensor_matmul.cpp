@@ -8,9 +8,9 @@ TEST(TensorMatMulTest, SquareMatrix) {
 
   Tensor c = a.matmul(b);
 
-  EXPECT_EQ(c.getShape()[0], 2);
-  EXPECT_EQ(c.getShape()[1], 2);
-  EXPECT_EQ(c.getSize(), 4);
+  EXPECT_EQ(c.shape()[0], 2);
+  EXPECT_EQ(c.shape()[1], 2);
+  EXPECT_EQ(c.size(), 4);
 
   EXPECT_FLOAT_EQ(c(0, 0), 19.0f);
   EXPECT_FLOAT_EQ(c(0, 1), 22.0f);
@@ -25,8 +25,8 @@ TEST(TensorMatMulTest, RectangularMatrix) {
 
   Tensor c = a.matmul(b);
 
-  EXPECT_EQ(c.getShape()[0], 2);
-  EXPECT_EQ(c.getShape()[1], 2);
+  EXPECT_EQ(c.shape()[0], 2);
+  EXPECT_EQ(c.shape()[1], 2);
 
   EXPECT_FLOAT_EQ(c(0, 0), 58.0f);
   EXPECT_FLOAT_EQ(c(0, 1), 64.0f);

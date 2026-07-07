@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <stdexcept>
+#include <functional>
 
 class Tensor {
 public:
@@ -10,47 +12,72 @@ public:
     using value_type = float;
     using size_type  = std::size_t;
     using Shape      = std::vector<size_type>;
-    using Storage    = std::vector<float>;
+    using Storage    = std::vector<value_type>;
     
-    // constructor
+    //  ================= Constructors =================
     Tensor() = default; // default constructor
     Tensor(const Storage &data, const Shape &shape); // constructor with data and shape
 
-    // properties
-    const Shape &getShape() const; // get the shape of the tensor
-    const Storage &getData() const;   // get the data of the tensor
-    size_t getSize() const; // get the size of the tensor (number of elements)
-    size_t getNumDimensions() const; // get the number of dimensions of the tensor
-    std::string dtype() const; // get the data type of the tensor (currently only
+    // ================= Properties ===================
+    [[nodiscard]] const Shape &shape() const noexcept; // get the shape of the tensor
+    [[nodiscard]] const Storage &data() const noexcept;   // get the data of the tensor
+    [[nodiscard]] size_type size() const noexcept; // get the size of the tensor (number of elements)
+    [[nodiscard]] size_type ndim() const noexcept; // get the number of dimensions of the tensor
+    [[nodiscard]] std::string dtype() const noexcept; // get the data type of the tensor (currently only
                                 // float is supported)
-    bool isEmpty() const;      // check if the tensor is empty
+    [[nodiscard]] bool empty() const noexcept;      // check if the tensor is empty
 
-    // Arithmetic operations with Tensor
-    Tensor operator+(const Tensor &other) const; // element-wise addition
-    Tensor operator-(const Tensor &other) const; // element-wise subtraction
-    Tensor operator*(const Tensor &other) const; // element-wise multiplication
-    Tensor operator/(const Tensor &other) const; // element-wise division
+    // ================= Addition ==========================
+    [[nodiscard]] Tensor operator+(const Tensor &other) const; // element-wise addition
+    [[nodiscard]] Tensor operator+(const value_type scalar) const; // add a scalar to each element of the tensor
+    friend Tensor operator+(const value_type scalar, const Tensor &tensor); // add a scalar to each element of the tensor (friend function)
+    Tensor& operator+=(const Tensor &other); // element-wise addition and assignment
+    Tensor& operator+=(const value_type scalar); // add a scalar to each element of the tensor and assignment
 
-    // Arithmetic operations with scalar
-    Tensor operator+(
-        const value_type scalar) const; // add a scalar to each element of the tensor
-    Tensor operator-(const value_type scalar)
-        const; // subtract a scalar from each element of the tensor
-    Tensor operator*(const value_type scalar)
-        const; // multiply each element of the tensor by a scalar
-    Tensor operator/(const value_type scalar)
-        const; // divide each element of the tensor by a scalar
+    // ================= Subtraction ==========================
+    [[nodiscard]] Tensor operator-(const Tensor &other) const; // element-wise subtraction
+    [[nodiscard]] Tensor operator-(const value_type scalar) const; // subtract a scalar from each element of the tensor
+    friend Tensor operator-(const value_type scalar, const Tensor &tensor); // subtract each element of the tensor from a scalar (friend function)
+    Tensor& operator-=(const Tensor &other); // element-wise subtraction and assignment
+    Tensor& operator-=(const value_type scalar); // subtract a scalar from each element of the tensor and assignment
 
-    // element access (2d)
+    // ================= Multiplication ==========================
+    [[nodiscard]] Tensor operator*(const Tensor &other) const; // element-wise multiplication
+    [[nodiscard]] Tensor operator*(const value_type scalar) const; // multiply each element of the tensor by a scalar
+    friend Tensor operator*(const value_type scalar, const Tensor &tensor); // multiply each element of the tensor by a scalar (friend function)
+    Tensor& operator*=(const Tensor &other); // element-wise multiplication and assignment
+    Tensor& operator*=(const value_type scalar); // multiply each element of the tensor by a scalar and assignment
+
+    // ================= Division ==========================
+    [[nodiscard]] Tensor operator/(const Tensor &other) const; // element-wise division
+    [[nodiscard]] Tensor operator/(const value_type scalar) const; // divide each element of the tensor by a scalar
+    friend Tensor operator/(const value_type scalar, const Tensor &tensor); // divide a scalar by each element of the tensor (friend function)
+    Tensor& operator/=(const Tensor &other); // element-wise division and assignment
+    Tensor& operator/=(const value_type scalar); // divide each element of the tensor by a scalar and assignment
+
+    // ================= Element Access ==========================
     value_type &operator()(size_type row,
                         size_type col); // access element by index (non-const)
-    const value_type &operator()(size_type row,
+     const value_type &operator()(size_type row,
                             size_type col) const; // for const access  function
 
-    // matrix multiplication
+    // ================= Matrix Multiplication ==========================
     Tensor matmul(const Tensor &other) const;
 
     private:
-    Storage data_;   // data of the tensor
-    Shape shape_; // shape of the tensor
+        template <typename BinaryOp>
+        [[nodiscard]] Tensor apply_tensor_operation(
+            const Tensor& other,
+            BinaryOp op,
+            const std::string& operation_name ,
+            bool check_division = false) const;
+
+        template <typename BinaryOp>
+        [[nodiscard]] Tensor apply_scalar_operation(
+            value_type scalar,
+            BinaryOp op,
+            bool check_division = false) const;
+
+        Storage data_;
+        Shape shape_;
 };
