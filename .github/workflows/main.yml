@@ -52,14 +52,6 @@ jobs:
           cmake: true
           ninja: true
 
-      - name: Cache compilation 
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ccache
-          key: ${{ runner.os }}-ccache-v1-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-v1-
-
       - name: Cache CMake build directory
         uses: actions/cache@v6
         with:
