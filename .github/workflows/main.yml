@@ -45,7 +45,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+
+      - name: Checking_availablitiy_CMake_files
+        id: CM
+        run : |
+          if [ -f Code/CMakeLists.txt ]; then
+            echo "valid=true" >> "$GITHUB_OUTPUT" 
+          else
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
+
+
       - name: Setup building tools C++
+        if: steps.CM.outputs.valid == 'true'
         uses: aminya/setup-cpp@v1
         with:
           compiler: llvm
@@ -53,6 +65,7 @@ jobs:
           ninja: true
 
       - name: Cache CMake build directory
+        if: steps.CM.outputs.valid == 'true'
         uses: actions/cache@v6
         with:
           path: Code/build
@@ -60,15 +73,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-v1-
 
+
       - name: Config CMake files
+        if: steps.CM.outputs.valid == 'true'
         run: |
           cmake -S Code -B Code/build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
 
+
       - name: Building
+        if: steps.CM.outputs.valid == 'true'
         run: |
           cmake --build Code/build --parallel
 
+
       - name: Run Tests
+        if: steps.CM.outputs.valid == 'true'
         working-directory: Code/build
         run: |
           ctest --output-on-failure --verbose
