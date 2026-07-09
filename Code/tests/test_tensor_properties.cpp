@@ -2,30 +2,30 @@
 #include <gtest/gtest.h>
 
 TEST(TensorTest, DefaultConstructor) {
-  Tensor tensor;
+    Tensor tensor;
 
-  EXPECT_TRUE(tensor.empty());
-  EXPECT_EQ(tensor.size(), 0);
-  EXPECT_EQ(tensor.ndim(), 0);
-  EXPECT_TRUE(tensor.shape().empty());
-  EXPECT_TRUE(tensor.data().empty());
+    EXPECT_TRUE(tensor.empty());
+    EXPECT_EQ(tensor.size(), 0);
+    EXPECT_EQ(tensor.ndim(), 0);
+    EXPECT_TRUE(tensor.shape().empty());
+    EXPECT_TRUE(tensor.data().empty());
 }
 
 TEST(TensorTest, Constructor) {
-  Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
+    Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
 
-  EXPECT_FALSE(tensor.empty());
+    EXPECT_FALSE(tensor.empty());
 
-  EXPECT_EQ(tensor.size(), 4);
-  EXPECT_EQ(tensor.ndim(), 2);
+    EXPECT_EQ(tensor.size(), 4);
+    EXPECT_EQ(tensor.ndim(), 2);
 
-  EXPECT_EQ(tensor.shape()[0], 2);
-  EXPECT_EQ(tensor.shape()[1], 2);
+    EXPECT_EQ(tensor.shape()[0], 2);
+    EXPECT_EQ(tensor.shape()[1], 2);
 
-  EXPECT_EQ(tensor.data()[0], 1.0f);
-  EXPECT_EQ(tensor.data()[1], 2.0f);
-  EXPECT_EQ(tensor.data()[2], 3.0f);
-  EXPECT_EQ(tensor.data()[3], 4.0f);
+    EXPECT_EQ(tensor.data()[0], 1.0f);
+    EXPECT_EQ(tensor.data()[1], 2.0f);
+    EXPECT_EQ(tensor.data()[2], 3.0f);
+    EXPECT_EQ(tensor.data()[3], 4.0f);
 
-  EXPECT_EQ(tensor.dtype(), "float");
+    EXPECT_EQ(tensor.dtype(), "float");
 }
