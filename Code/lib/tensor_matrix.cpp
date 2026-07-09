@@ -1,6 +1,5 @@
 #include "tensor.h"
 
-
 Tensor Tensor::matmul(const Tensor &other) const {
   if (shape_.size() != 2 || other.shape_.size() != 2) {
     throw std::invalid_argument(

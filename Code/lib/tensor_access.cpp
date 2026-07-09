@@ -1,7 +1,7 @@
 #include "tensor.h"
 
-
-Tensor::value_type &Tensor::operator()(Tensor::size_type row, Tensor::size_type col) {
+Tensor::value_type &Tensor::operator()(Tensor::size_type row,
+                                       Tensor::size_type col) {
   if (shape_.size() != 2) {
     throw std::invalid_argument("Tensor is not 2D.");
   }
@@ -11,7 +11,8 @@ Tensor::value_type &Tensor::operator()(Tensor::size_type row, Tensor::size_type 
   return data_[row * shape_[1] + col];
 }
 
-const Tensor::value_type &Tensor::operator()(Tensor::size_type row, Tensor::size_type col) const {
+const Tensor::value_type &Tensor::operator()(Tensor::size_type row,
+                                             Tensor::size_type col) const {
   if (shape_.size() != 2) {
     throw std::invalid_argument("Tensor is not 2D.");
   }
