@@ -3,6 +3,7 @@ add_library(Tensor
     tensor_arithmetic.cpp
     tensor_access.cpp
     tensor_matrix.cpp
+    tensor_broadcast.cpp
 )
 
 target_include_directories(Tensor

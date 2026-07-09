@@ -6,20 +6,21 @@ template <typename BinaryOp>
 Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op,
                                       const std::string& operation_name,
                                       bool check_division) const {
+    // add broadcasting support
+    Shape result_shape = broadcast_shape(shape_, other.shape_);
+    Storage resultData(compute_size(result_shape));
 
-    if (shape_ != other.shape_) {
-        throw std::invalid_argument("Shapes of tensors do not match for " + operation_name + ".");
-    }
-
-    Tensor::Storage resultData(data_.size());
-    for (Tensor::size_type i = 0; i < data_.size(); ++i) {
-        if (check_division && other.data_[i] == 0) {
+    for (size_type i = 0; i < resultData.size(); ++i) {
+        const Shape output_index = unravel_index(i, result_shape);
+        const Shape lhs_index = broadcast_index(output_index, shape_);
+        const Shape rhs_index = broadcast_index(output_index, other.shape_);
+        if (check_division && other.data_[ravel_index(rhs_index, other.shape_)] == 0) {
             throw std::invalid_argument("Division by zero in tensor-tensor operation.");
         }
-        resultData[i] = op(data_[i], other.data_[i]);
+        resultData[i] = op(data_[ravel_index(lhs_index, shape_)],
+                           other.data_[ravel_index(rhs_index, other.shape_)]);
     }
-
-    return Tensor(resultData, shape_);
+    return Tensor(resultData, result_shape);
 }
 
 template <typename BinaryOp>

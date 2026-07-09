@@ -102,6 +102,16 @@ class Tensor {
     template <typename BinaryOp>
     [[nodiscard]] Tensor apply_scalar_operation(value_type scalar, BinaryOp op,
                                                 bool check_division = false) const;
+    // ================= Helper Functions ==========================
+    static Shape broadcast_shape(const Shape& lhs, const Shape& rhs);
+
+    static size_type compute_size(const Shape& shape);
+
+    static Shape unravel_index(size_type flat_index, const Shape& shape);
+
+    static size_type ravel_index(const Shape& shape, const Shape& index);
+
+    static Shape broadcast_index(const Shape& output_index, const Shape& input_shape);
 
     Storage data_;
     Shape shape_;
