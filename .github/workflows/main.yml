@@ -1,0 +1,74 @@
+name: Ci For cpp Code
+
+on:
+  push:
+    branches: ["main", "Tensor/*", "tensor/*"]
+    paths-ignore:
+      - "docs/*"
+      - "*.md"
+      - "LICENSE"
+      - "Documentation/**"
+
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "Documentation/**"
+
+jobs:
+  Testing-Formatting:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        path:
+          - Code/lib
+          - Code/include
+          - Code/tests
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Run clang-format style check for C++ programs.
+        uses: jidicula/clang-format-action@v4.18.0
+        with:
+          clang-format-version: "18"
+          check-path: ${{ matrix.path }}
+          fallback-style: "LLVM"
+
+  Testing-building:
+    runs-on: ubuntu-latest
+    needs: Testing-Formatting
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup building tools C++
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm
+          cmake: true
+          ninja: true
+
+      - name: Cache CMake build directory
+        uses: actions/cache@v6
+        with:
+          path: Code/build
+          key: ${{ runner.os }}-build-v1-${{ hashFiles('Code/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-v1-
+
+      - name: Config CMake files
+        run: |
+          cmake -S Code -B Code/build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Building
+        run: |
+          cmake --build Code/build --parallel
+
+      - name: Run Tests
+        working-directory: Code/build
+        run: |
+          ctest --output-on-failure --verbose
