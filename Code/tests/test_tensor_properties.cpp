@@ -29,3 +29,36 @@ TEST(TensorTest, Constructor) {
 
     EXPECT_EQ(tensor.dtype(), "float");
 }
+
+TEST(TensorTest, ElementAccess) {
+    Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
+
+    EXPECT_FLOAT_EQ(tensor({0, 0}), 1.0f);
+    EXPECT_FLOAT_EQ(tensor({0, 1}), 2.0f);
+    EXPECT_FLOAT_EQ(tensor({1, 0}), 3.0f);
+    EXPECT_FLOAT_EQ(tensor({1, 1}), 4.0f);
+
+    // Modify an element
+    tensor({1, 1}) = 10.0f;
+    EXPECT_FLOAT_EQ(tensor({1, 1}), 10.0f);
+}
+
+TEST(TensorTest, NDimensionalElementAccess) {
+    Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}, {2, 2, 2});
+
+    EXPECT_FLOAT_EQ(tensor({0, 0, 0}), 1.0f);
+    EXPECT_FLOAT_EQ(tensor({0, 0, 1}), 2.0f);
+    EXPECT_FLOAT_EQ(tensor({0, 1, 0}), 3.0f);
+    EXPECT_FLOAT_EQ(tensor({0, 1, 1}), 4.0f);
+    EXPECT_FLOAT_EQ(tensor({1, 0, 0}), 5.0f);
+    EXPECT_FLOAT_EQ(tensor({1, 0, 1}), 6.0f);
+    EXPECT_FLOAT_EQ(tensor({1, 1, 0}), 7.0f);
+    EXPECT_FLOAT_EQ(tensor({1, 1, 1}), 8.0f);
+}
+
+TEST(TensorTest, OutOfBoundsAccess) {
+    Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
+    EXPECT_THROW(tensor({2, 0}), std::out_of_range);
+    EXPECT_THROW(tensor({0, 2}), std::out_of_range);
+    EXPECT_THROW(tensor({0, 0, 0}), std::invalid_argument);
+}

@@ -22,7 +22,8 @@ Tensor Tensor::matmul(const Tensor& other) const {
             Tensor::value_type sum = 0.0f;
 
             for (Tensor::size_type k = 0; k < colsA; ++k) {
-                sum += (*this)(i, k) * other(k, j);
+                // sum += (*this)(i, k) * other(k, j);
+                sum += data_[i * colsA + k] * other.data_[k * colsB + j];
             }
 
             result[i * colsB + j] = sum;

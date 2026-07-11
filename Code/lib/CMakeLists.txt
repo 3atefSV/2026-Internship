@@ -1,5 +1,4 @@
 add_library(Tensor
-    tensor.cpp
     tensor_arithmetic.cpp
     tensor_access.cpp
     tensor_matrix.cpp

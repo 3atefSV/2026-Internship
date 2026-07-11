@@ -16,8 +16,8 @@ class Tensor {
 
     //  ================= Constructors =================
     Tensor() = default; // default constructor
-    Tensor(const Storage& data,
-           const Shape& shape); // constructor with data and shape
+    Tensor(const Storage& data, const Shape& shape)
+        : data_(data), shape_(shape) {} // constructor with data and shape
 
     // ================= Properties ===================
     [[nodiscard]] const Shape& shape() const noexcept {
@@ -85,10 +85,8 @@ class Tensor {
                                                    // a scalar and assignment
 
     // ================= Element Access ==========================
-    value_type& operator()(size_type row,
-                           size_type col); // access element by index (non-const)
-    const value_type& operator()(size_type row,
-                                 size_type col) const; // for const access  function
+    value_type& operator()(const Shape& indices);
+    const value_type& operator()(const Shape& indices) const;
 
     // ================= Matrix Multiplication ==========================
     [[nodiscard]] Tensor matmul(const Tensor&) const;
