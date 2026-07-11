@@ -8,12 +8,21 @@ project(TensorLibrary LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Enable compiler warnings
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
+endif()
+
 # set the output directory for the compiled binaries
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-# for enable gtest or any other testing framework
+
+# enable testing
 enable_testing()
 
-# to read other CMake files in the subdirectories
+# subdirectories
 add_subdirectory(lib)
-
 add_subdirectory(tests)

@@ -3,9 +3,7 @@
 // =============================
 
 template <typename BinaryOp>
-Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op,
-                                      const std::string& operation_name,
-                                      bool check_division) const {
+Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool check_division) const {
     // add broadcasting support
     Shape result_shape = broadcast_shape(shape_, other.shape_);
     Storage resultData(compute_size(result_shape));
@@ -36,7 +34,7 @@ Tensor Tensor::apply_scalar_operation(value_type scalar, BinaryOp op, bool check
 }
 // ============================= Addition =============================
 Tensor Tensor::operator+(const Tensor& other) const {
-    return apply_tensor_operation(other, std::plus<value_type>(), "addition");
+    return apply_tensor_operation(other, std::plus<value_type>());
 }
 
 Tensor Tensor::operator+(const value_type scalar) const {
@@ -57,7 +55,7 @@ Tensor& Tensor::operator+=(const value_type scalar) {
 
 // ============================= Subtraction =============================
 Tensor Tensor::operator-(const Tensor& other) const {
-    return apply_tensor_operation(other, std::minus<value_type>(), "subtraction");
+    return apply_tensor_operation(other, std::minus<value_type>());
 }
 
 Tensor Tensor::operator-(const value_type scalar) const {
@@ -83,7 +81,7 @@ Tensor& Tensor::operator-=(const value_type scalar) {
 
 // ============================= Multiplication =============================
 Tensor Tensor::operator*(const Tensor& other) const {
-    return apply_tensor_operation(other, std::multiplies<value_type>(), "multiplication");
+    return apply_tensor_operation(other, std::multiplies<value_type>());
 }
 
 Tensor Tensor::operator*(const value_type scalar) const {
@@ -105,7 +103,7 @@ Tensor& Tensor::operator*=(const value_type scalar) {
 // ============================= Division =============================
 Tensor Tensor::operator/(const Tensor& other) const {
 
-    return apply_tensor_operation(other, std::divides<value_type>(), "division",
+    return apply_tensor_operation(other, std::divides<value_type>(),
                                   true); // check for division by zero
 }
 

@@ -106,7 +106,6 @@ class Tensor {
 
     template <typename BinaryOp>
     [[nodiscard]] Tensor apply_tensor_operation(const Tensor& other, BinaryOp op,
-                                                const std::string& operation_name,
                                                 bool check_division = false) const;
 
     template <typename BinaryOp>
