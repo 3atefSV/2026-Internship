@@ -92,6 +92,9 @@ class Tensor {
     [[nodiscard]] Tensor matmul(const Tensor&) const;
 
   private:
+    Storage data_;
+    Shape shape_;
+
     template <typename BinaryOp>
     [[nodiscard]] Tensor apply_tensor_operation(const Tensor& other, BinaryOp op,
                                                 const std::string& operation_name,
@@ -100,7 +103,7 @@ class Tensor {
     template <typename BinaryOp>
     [[nodiscard]] Tensor apply_scalar_operation(value_type scalar, BinaryOp op,
                                                 bool check_division = false) const;
-    // ================= Helper Functions ==========================
+    // ================= Helper Functions for broadcast ==========================
     static Shape broadcast_shape(const Shape& lhs, const Shape& rhs);
 
     static size_type compute_size(const Shape& shape);
@@ -110,7 +113,6 @@ class Tensor {
     static size_type ravel_index(const Shape& shape, const Shape& index);
 
     static Shape broadcast_index(const Shape& output_index, const Shape& input_shape);
-
-    Storage data_;
-    Shape shape_;
+    // ================= Helper Functions for matrix multiplication ==========================
+    [[nodiscard]] Shape extract_batch_shape(const Shape& shape) const;
 };
