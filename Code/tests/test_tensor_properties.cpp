@@ -62,3 +62,20 @@ TEST(TensorTest, OutOfBoundsAccess) {
     EXPECT_THROW(tensor({0, 2}), std::out_of_range);
     EXPECT_THROW(tensor({0, 0, 0}), std::invalid_argument);
 }
+
+TEST(TensorTest, OutputOperator) {
+    Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
+    std::ostringstream oss;
+    oss << tensor;
+    std::string expected_output = "Tensor(shape=[2, 2], data=[1, 2, 3, 4])";
+    EXPECT_EQ(oss.str(), expected_output);
+}
+
+TEST(TensorTest, EqualityOperator) {
+    Tensor tensor1({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
+    Tensor tensor2({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
+    Tensor tensor3({1.0f, 2.0f, 3.0f, 5.0f}, {2, 2});
+
+    EXPECT_TRUE(tensor1 == tensor2);
+    EXPECT_FALSE(tensor1 == tensor3);
+}

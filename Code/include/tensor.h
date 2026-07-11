@@ -16,6 +16,10 @@ class Tensor {
 
     //  ================= Constructors =================
     Tensor() = default; // default constructor
+    Tensor(const Tensor&) = default;
+    Tensor& operator=(const Tensor&) = default;
+    ~Tensor() = default; // destructor
+
     Tensor(const Storage& data, const Shape& shape)
         : data_(data), shape_(shape) {} // constructor with data and shape
 
@@ -39,6 +43,11 @@ class Tensor {
     [[nodiscard]] bool empty() const noexcept {
         return data_.empty();
     }; // check if the tensor is empty
+
+    // ================= Output ==========================
+    friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
+    // ================= Equality ==========================
+    [[nodiscard]] bool operator==(const Tensor& other) const noexcept;
 
     // ================= Addition ==========================
     [[nodiscard]] Tensor operator+(const Tensor&) const; // element-wise addition

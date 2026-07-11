@@ -3,6 +3,7 @@ add_library(Tensor
     tensor_access.cpp
     tensor_matrix.cpp
     tensor_broadcast.cpp
+    tensor_properties.cpp
 )
 
 target_include_directories(Tensor
