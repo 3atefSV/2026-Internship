@@ -95,12 +95,6 @@ Helper functions:
 
 Supports:
 
-- 2D access using
-
-```cpp
-tensor(i, j);
-```
-
 - N-dimensional access using
 
 ```cpp
