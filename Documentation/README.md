@@ -1,162 +1,212 @@
-# Tensor Library (C++)
+# TinyTorch Tensor Library
 
-A lightweight Tensor library implemented in modern C++ as part of an Embedded Software internship. This project represents the foundation of a AI framework built from scratch, with the Tensor library serving as the core component for future numerical operations, automatic differentiation, and deep learning modules.
-
----
+A lightweight Tensor library implemented in modern C++17 as part of the 2026 Embedded Software Internship.
 
 ## Features
 
 ### Tensor Properties
+- Dynamic N-dimensional tensor representation.
+- Shape and storage management.
+- Tensor metadata:
+  - `shape()`
+  - `size()`
+  - `ndim()`
+  - `empty()`
+  - `dtype()`
 
-- Create tensors from data and shape
-- Get tensor shape
-- Get tensor size
-- Get number of dimensions
-- Check if a tensor is empty
-- Get tensor data type
+---
 
 ### Arithmetic Operations
 
-#### Tensor ↔ Tensor
+Element-wise operations between tensors:
 
-- Addition (`+`)
-- Subtraction (`-`)
-- Multiplication (`*`)
-- Division (`/`)
+- Tensor + Tensor
+- Tensor - Tensor
+- Tensor * Tensor
+- Tensor / Tensor
 
-#### Tensor ↔ Scalar
+Scalar operations:
 
-- Addition (`+`)
-- Subtraction (`-`)
-- Multiplication (`*`)
-- Division (`/`)
+- Tensor + scalar
+- Tensor - scalar
+- Tensor * scalar
+- Tensor / scalar
 
-### Matrix Operations
+Reverse scalar operations:
 
-- Matrix multiplication (`matmul`)
+- scalar + Tensor
+- scalar - Tensor
+- scalar * Tensor
+- scalar / Tensor
 
-### Element Access
+Compound assignment operators:
 
-Access tensor elements using:
+- `+=`
+- `-=`
+- `*=`
+- `/=`
+
+---
+
+### Broadcasting
+
+Implemented NumPy-style broadcasting for element-wise operations.
+
+Supported features:
+
+- Automatic broadcast shape calculation.
+- Broadcasting tensors with different dimensions.
+- Broadcasting singleton dimensions.
+- Shape validation.
+
+Helper functions:
+
+- `broadcast_shape()`
+- `broadcast_index()`
+- `compute_size()`
+- `unravel_index()`
+- `ravel_index()`
+
+---
+
+### Matrix Multiplication
+
+Implemented matrix multiplication supporting:
+
+- 2D matrices
+- Batched matrix multiplication
+- N-dimensional tensors
+
+Features:
+
+- Batch dimension broadcasting
+- Arbitrary batch dimensions
+- Shape validation
+- Dynamic result shape generation
+
+Helper functions:
+
+- `extract_batch_shape()`
+- `build_result_shape()`
+
+---
+
+### Tensor Element Access
+
+Supports:
+
+- 2D access using
 
 ```cpp
-tensor(row, column)
+tensor(i, j);
 ```
+
+- N-dimensional access using
+
+```cpp
+tensor({i, j, k, ...});
+```
+
+---
+
+### Operators
+
+Implemented:
+
+- `operator==`
+- Copy assignment
+- Move assignment
+- Stream operator
 
 Example:
 
 ```cpp
-Tensor t(
-    {1,2,
-     3,4},
-    {2,2}
-);
-
-std::cout << t(1,0);   // 3
-
-t(0,1) = 100;
+std::cout << tensor << std::endl;
 ```
 
 ---
 
-# Project Structure
+### Testing
+
+Implemented unit tests using GoogleTest.
+
+Coverage includes:
+
+- Tensor properties
+- Arithmetic operations
+- Broadcasting
+- Matrix multiplication
+- Scalar operations
+- Exception handling
+- Batch matrix multiplication
+- N-dimensional matrix multiplication
+
+---
+
+### Build Improvements
+
+- Refactored test CMake using helper function
+
+```cmake
+add_tensor_test(...)
+```
+
+- Enabled compiler warnings
+
+```text
+-Wall
+-Wextra
+-Wpedantic
+```
+
+---
+
+## Project Structure
 
 ```
-Tensor/
-│
-├── CMakeLists.txt          # Root CMake
-│
+Code/
 ├── include/
-│   ├── tensor.h
-│   └── CMakeLists.txt
+│   └── tensor.h
 │
 ├── lib/
 │   ├── tensor.cpp
-│   └── CMakeLists.txt
+│   ├── tensor_access.cpp
+│   ├── tensor_arithmetic.cpp
+│   ├── tensor_broadcast.cpp
+│   ├── tensor_matrix.cpp
+│   └── tensor_print.cpp
 │
 ├── tests/
 │   ├── test_tensor_properties.cpp
 │   ├── test_tensor_arithmetic.cpp
-│   ├── test_tensor_matmul.cpp
-│   └── CMakeLists.txt
+│   ├── test_tensor_broadcast.cpp
+│   └── test_tensor_matmul.cpp
 │
-└── README.md
+└── CMakeLists.txt
 ```
 
 ---
 
-# Build
+## Future Improvements
 
-Create the build directory and generate the project:
-
-```bash
-mkdir build
-cd build
-
-cmake ..
-```
-
-Build the project:
-
-```bash
-cmake --build .
-```
-
----
-
-# Run Tests
-
-Run all unit tests:
-
-```bash
-ctest
-```
-
-or execute the test binary directly:
-
-```bash
-./bin/test_tensor_properties
-```
-
----
-
-# Example
+- Support chained indexing
 
 ```cpp
-Tensor a(
-    {1,2,
-     3,4},
-    {2,2}
-);
-
-Tensor b(
-    {5,6,
-     7,8},
-    {2,2}
-);
-
-Tensor c = a + b;
-
-Tensor d = a.matmul(b);
+tensor[i][j][k]
 ```
 
----
+using proxy classes.
 
-# Unit Testing
-
-The project uses **GoogleTest** to verify:
-
-- Tensor properties
-- Arithmetic operations
-- Matrix multiplication
-- Element access
-- Exception handling
+- Optimize matrix multiplication performance
+  - Cache-friendly implementation
+  - SIMD/vectorization
+  - Parallel execution
+  - Blocked matrix multiplication
 
 ---
 
-# Technologies
+## Technologies
 
 - C++17
-- CMake (Multi-directory project)
+- CMake
 - GoogleTest
-- Git
