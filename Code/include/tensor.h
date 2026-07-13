@@ -1,9 +1,8 @@
 #pragma once
 
 #include <cstddef>
-#include <functional>
-#include <stdexcept>
-#include <string>
+#include <iosfwd>
+#include <string_view>
 #include <vector>
 
 class Tensor {
@@ -36,7 +35,7 @@ class Tensor {
     [[nodiscard]] size_type ndim() const noexcept {
         return shape_.size();
     }; // get the number of dimensions of the tensor
-    [[nodiscard]] std::string dtype() const noexcept {
+    [[nodiscard]] std::string_view dtype() const noexcept {
         return "float";
     }; // get the data type of the tensor (currently only
        // float is supported)

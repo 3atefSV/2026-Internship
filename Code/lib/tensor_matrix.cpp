@@ -1,4 +1,5 @@
 #include "tensor.h"
+#include <stdexcept>
 
 Tensor::Shape Tensor::extract_batch_shape(const Shape& shape) const {
     if (shape.size() < 2) {

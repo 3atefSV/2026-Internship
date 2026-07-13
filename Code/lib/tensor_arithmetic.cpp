@@ -1,23 +1,36 @@
 #include "tensor.h"
+#include <functional>
+#include <stdexcept>
+
 // ============================= Tensor Arithmetic Operations
 // =============================
 
 template <typename BinaryOp>
 Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool check_division) const {
-    // add broadcasting support
     Shape result_shape = broadcast_shape(shape_, other.shape_);
+
     Storage resultData(compute_size(result_shape));
 
     for (size_type i = 0; i < resultData.size(); ++i) {
+
         const Shape output_index = unravel_index(i, result_shape);
+
         const Shape lhs_index = broadcast_index(output_index, shape_);
         const Shape rhs_index = broadcast_index(output_index, other.shape_);
-        if (check_division && other.data_[ravel_index(rhs_index, other.shape_)] == 0) {
+
+        const size_type lhs_flat = ravel_index(lhs_index, shape_);
+        const size_type rhs_flat = ravel_index(rhs_index, other.shape_);
+
+        const value_type lhs = data_[lhs_flat];
+        const value_type rhs = other.data_[rhs_flat];
+
+        if (check_division && rhs == 0) {
             throw std::invalid_argument("Division by zero in tensor-tensor operation.");
         }
-        resultData[i] = op(data_[ravel_index(lhs_index, shape_)],
-                           other.data_[ravel_index(rhs_index, other.shape_)]);
+
+        resultData[i] = op(lhs, rhs);
     }
+
     return Tensor(resultData, result_shape);
 }
 

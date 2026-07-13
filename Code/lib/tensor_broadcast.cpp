@@ -1,4 +1,5 @@
 #include "tensor.h"
+#include <stdexcept>
 
 Tensor::Shape Tensor::broadcast_shape(const Shape& lhs, const Shape& rhs) {
 
