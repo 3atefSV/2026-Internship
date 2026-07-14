@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.28)
 include(FetchContent)
 
 FetchContent_Declare(
@@ -28,3 +29,5 @@ add_tensor_test(test_tensor_properties)
 add_tensor_test(test_tensor_arithmetic)
 add_tensor_test(test_tensor_matmul)
 add_tensor_test(test_tensor_broadcast)
+add_tensor_test(test_tensor_reduction)
+add_tensor_test(test_tensor_shapeOps)

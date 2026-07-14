@@ -17,44 +17,47 @@ Tensor Tensor::reShape(const Shape& new_shape) const {
 }
 
 Tensor Tensor::Transpose(const Shape& axis) const {
-
-    if (this->ndim() <= 1) {
+    if (ndim() <= 1) {
         return *this;
     }
-    if (this->ndim() != 2) {
-        throw std::invalid_argument("Works on 2D ");
-    }
+
     Shape f_axes = axis;
-
     if (f_axes.empty()) {
-        f_axes.resize(this->ndim());                //{0,0,0}
-        std::iota(f_axes.begin(), f_axes.end(), 0); //{2,1,0}
-        std::reverse(f_axes.begin(), f_axes.end()); //{0,1,2}
+        f_axes.resize(ndim());
+        std::iota(f_axes.begin(), f_axes.end(), 0);
+        std::reverse(f_axes.begin(), f_axes.end());
+    }
 
-    } else {
-        if (f_axes.size() != this->ndim()) {
-            throw std::invalid_argument("Axes,Don't Match");
+    if (f_axes.size() != ndim()) {
+        throw std::invalid_argument("Axes don't match tensor dimensions");
+    }
+
+    Shape used(ndim(), 0);
+    for (size_type axis_index : f_axes) {
+        if (axis_index >= ndim()) {
+            throw std::invalid_argument("Axis index out of range for transpose");
         }
-    }
-
-    Shape TransposedShape(this->ndim());
-    for (size_t i{0}; i < this->ndim(); ++i) {
-        TransposedShape[i] = shape_[f_axes[i]];
-    }
-
-    Storage transposedData(this->size());
-
-    for (size_type index{0}; index < this->size(); ++index) {
-
-        Shape transposed_index = unravel_index(index, TransposedShape);
-        Shape original(this->ndim());
-
-        for (size_type i = 0; i < this->ndim(); ++i) {
-            original[f_axes[i]] = transposed_index[i];
+        if (used[axis_index]) {
+            throw std::invalid_argument("Duplicate axis in transpose permutation");
         }
-
-        size_type original_index = ravel_index(this->shape_, original);
-        transposedData[index] = data_[original_index];
+        used[axis_index] = 1;
     }
-    return Tensor(transposedData, TransposedShape);
+
+    Shape transposedShape(ndim());
+    for (size_type i = 0; i < ndim(); ++i) {
+        transposedShape[i] = shape_[f_axes[i]];
+    }
+
+    Storage transposedData(size());
+    for (size_type index = 0; index < size(); ++index) {
+        Shape output_index = unravel_index(index, transposedShape);
+        Shape original(ndim());
+        for (size_type i = 0; i < ndim(); ++i) {
+            original[f_axes[i]] = output_index[i];
+        }
+        size_type src_index = ravel_index(original, shape_);
+        transposedData[index] = data_[src_index];
+    }
+
+    return Tensor(transposedData, transposedShape);
 }
