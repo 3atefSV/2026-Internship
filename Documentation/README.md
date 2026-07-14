@@ -119,6 +119,42 @@ std::cout << tensor << std::endl;
 ```
 
 ---
+### Shape Operations and Reductions
+
+- Added true n-dimensional transpose support to `Tensor::Transpose(const Shape& axis) const`.
+- Updated shape operation tests to cover:
+  - 2D transpose with default and explicit axes
+  - 1D transpose behavior
+  - 3D transpose with default reverse-axes behavior
+  - 3D transpose with explicit axis permutation
+- Kept `reShape` behavior unchanged and verified it still preserves element order.
+
+### New Files Added and Changed
+
+- `Code/lib/tensor_shapeOps.cpp`
+  - Rewrote `Transpose` to support arbitrary permutations for tensors of any rank.
+  - Added validation for axis length, axis range, and duplicate axes.
+  - Used `unravel_index` and `ravel_index` to map between flattened storage and multidimensional coordinates.
+
+- `Code/tests/test_tensor_shapeOps.cpp`
+  - Added 3D transpose tests and corrected expected output for explicit axis permutations.
+
+- `Code/tests/test_tensor_reduction.cpp`
+  - Added tests for the following Reductions [sum  - mean - max -min]
+
+- `Code/tests/tensor_reduction.cpp`
+  - Added implemetation  for the following Reductions [sum  - mean - max -min]
+
+- `python/demo.py` 
+  - We Implemented a test scenarios to encounter what we have done till  know
+### Problems encountered and fixed
+
+- The original transpose implementation only handled 2D tensors and rejected higher-rank tensors.
+- The first generic transpose implementation had an incorrect `ravel_index` argument order, which produced wrong element placement.
+- The 3D test expectations were also updated once the correct index mapping became clear.
+
+
+---
 
 ### Testing
 
@@ -169,13 +205,16 @@ Code/
 │   ├── tensor_broadcast.cpp
 │   ├── tensor_matrix.cpp
 │   └── tensor_print.cpp
-│
+│   └── tensor_shapeOps.cpp
 ├── tests/
 │   ├── test_tensor_properties.cpp
 │   ├── test_tensor_arithmetic.cpp
 │   ├── test_tensor_broadcast.cpp
 │   └── test_tensor_matmul.cpp
-│
+│   └── test_tensor_shapeOps.cpp
+├──python/
+|   ├── demo.py 
+|
 └── CMakeLists.txt
 ```
 
