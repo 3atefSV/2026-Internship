@@ -108,6 +108,7 @@ class Tensor {
     [[nodiscard]] Tensor mean(size_type axis) const;
     [[nodiscard]] value_type max() const;
     [[nodiscard]] value_type min() const;
+    
   private:
     Storage data_;
     Shape shape_;
