@@ -98,12 +98,9 @@ class Tensor {
 
     // ================= Matrix Multiplication ==========================
     [[nodiscard]] Tensor matmul(const Tensor&) const;
-
-
     // shapeOperations
-    [[nodiscard]] Tensor reShape(const Shape &new_shape) const;
-    [[nodiscard]] Tensor Transpose(const Shape & axis) const;
-
+    [[nodiscard]] Tensor reShape(const Shape& new_shape) const;
+    [[nodiscard]] Tensor Transpose(const Shape& axis) const;
     // Reduction Ops
     [[nodiscard]] value_type sum() const noexcept;
     [[nodiscard]] Tensor sum(size_type axis) const;
@@ -111,7 +108,6 @@ class Tensor {
     [[nodiscard]] Tensor mean(size_type axis) const;
     [[nodiscard]] value_type max() const;
     [[nodiscard]] value_type min() const;
-    
   private:
     Storage data_;
     Shape shape_;
