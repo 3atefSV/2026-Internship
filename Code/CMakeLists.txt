@@ -26,3 +26,4 @@ enable_testing()
 # subdirectories
 add_subdirectory(lib)
 add_subdirectory(tests)
+add_subdirectory(bindings)

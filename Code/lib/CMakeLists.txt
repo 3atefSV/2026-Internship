@@ -5,6 +5,9 @@ add_library(Tensor
     tensor_broadcast.cpp
     tensor_properties.cpp
 )
+set_target_properties(Tensor PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+)
 
 target_include_directories(Tensor
     PUBLIC
