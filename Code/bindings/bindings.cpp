@@ -29,8 +29,7 @@ PYBIND11_MODULE(tinytorch, m) {
 
         .def(py::init<>())
 
-        .def(py::init<const Tensor::Storage&, const Tensor::Shape&>(),
-             py::arg("data"),
+        .def(py::init<const Tensor::Storage&, const Tensor::Shape&>(), py::arg("data"),
              py::arg("shape"))
 
         // ================= Properties =================
@@ -55,51 +54,28 @@ PYBIND11_MODULE(tinytorch, m) {
 
         // ================= Element Access =================
 
-        .def("__getitem__",
-             [](const Tensor& tensor, Tensor::size_type index) {
-                 return tensor(Tensor::Shape{index});
-             })
+        .def("__getitem__", [](const Tensor& tensor,
+                               Tensor::size_type index) { return tensor(Tensor::Shape{index}); })
 
-        .def("__getitem__",
-             [](const Tensor& tensor, const py::tuple& index) {
-                 return tensor(tuple_to_shape(index));
-             })
+        .def("__getitem__", [](const Tensor& tensor,
+                               const py::tuple& index) { return tensor(tuple_to_shape(index)); })
 
-        .def("__setitem__",
-             [](Tensor& tensor,
-                Tensor::size_type index,
-                Tensor::value_type value) {
-                 tensor(Tensor::Shape{index}) = value;
-             })
+        .def("__setitem__", [](Tensor& tensor, Tensor::size_type index,
+                               Tensor::value_type value) { tensor(Tensor::Shape{index}) = value; })
 
-        .def("__setitem__",
-             [](Tensor& tensor,
-                const py::tuple& index,
-                Tensor::value_type value) {
-                 tensor(tuple_to_shape(index)) = value;
-             })
+        .def("__setitem__", [](Tensor& tensor, const py::tuple& index,
+                               Tensor::value_type value) { tensor(tuple_to_shape(index)) = value; })
 
         // ================= Utilities =================
 
         .def("__len__",
-             [](const Tensor& tensor) {
-                 return tensor.shape().empty() ? 0 : tensor.shape()[0];
-             })
+             [](const Tensor& tensor) { return tensor.shape().empty() ? 0 : tensor.shape()[0]; })
 
-        .def("__bool__",
-             [](const Tensor& tensor) {
-                 return !tensor.empty();
-             })
+        .def("__bool__", [](const Tensor& tensor) { return !tensor.empty(); })
 
-        .def("copy",
-             [](const Tensor& tensor) {
-                 return Tensor(tensor);
-             })
+        .def("copy", [](const Tensor& tensor) { return Tensor(tensor); })
 
-        .def("tolist",
-             [](const Tensor& tensor) {
-                 return tensor.data();
-             })
+        .def("tolist", [](const Tensor& tensor) { return tensor.data(); })
 
         // ================= Comparison =================
 
@@ -132,10 +108,9 @@ PYBIND11_MODULE(tinytorch, m) {
                  return oss.str();
              })
 
-        .def("__str__",
-             [](const Tensor& tensor) {
-                 std::ostringstream oss;
-                 oss << tensor;
-                 return oss.str();
-             });
+        .def("__str__", [](const Tensor& tensor) {
+            std::ostringstream oss;
+            oss << tensor;
+            return oss.str();
+        });
 }

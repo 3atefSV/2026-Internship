@@ -1,15 +1,19 @@
-find_package(pybind11 REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11.git
+    GIT_TAG v2.13.6
+)
+
+FetchContent_MakeAvailable(pybind11)
 
 pybind11_add_module(tinytorch
     bindings.cpp
 )
 
-target_link_libraries(tinytorch
-    PRIVATE
-        Tensor
-)
+target_link_libraries(tinytorch PRIVATE Tensor)
 
-target_include_directories(tinytorch
-    PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
+target_include_directories(tinytorch PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
 )
