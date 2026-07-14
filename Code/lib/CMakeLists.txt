@@ -4,6 +4,8 @@ add_library(Tensor
     tensor_matrix.cpp
     tensor_broadcast.cpp
     tensor_properties.cpp
+    tensor_reduction.cpp
+    tensor_shapeOps.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
