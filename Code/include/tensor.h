@@ -99,6 +99,19 @@ class Tensor {
     // ================= Matrix Multiplication ==========================
     [[nodiscard]] Tensor matmul(const Tensor&) const;
 
+
+    // shapeOperations
+    [[nodiscard]] Tensor reShape(const Shape &new_shape) const;
+    [[nodiscard]] Tensor Transpose(const Shape & axis) const;
+
+    // Reduction Ops
+    [[nodiscard]] value_type sum() const noexcept;
+    [[nodiscard]] Tensor sum(size_type axis) const;
+    [[nodiscard]] value_type mean() const;
+    [[nodiscard]] Tensor mean(size_type axis) const;
+    [[nodiscard]] value_type max() const;
+    [[nodiscard]] value_type min() const;
+    
   private:
     Storage data_;
     Shape shape_;
@@ -120,6 +133,9 @@ class Tensor {
     static size_type ravel_index(const Shape& shape, const Shape& index);
 
     static Shape broadcast_index(const Shape& output_index, const Shape& input_shape);
+
+    static Shape reduced_shape(const Shape& shape, size_type axis);
+    static Storage reduce_axis_data(const Tensor& tensor, size_type axis, bool compute_mean);
     // ================= Helper Functions for matrix multiplication ==========================
     [[nodiscard]] Shape extract_batch_shape(const Shape& shape) const;
 };
