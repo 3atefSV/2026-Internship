@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <cstddef>
 #include <iosfwd>
 #include <string_view>
@@ -129,6 +130,14 @@ class Tensor {
     [[nodiscard]] Tensor mean(size_type axis) const;
     [[nodiscard]] value_type max() const;
     [[nodiscard]] value_type min() const;
+
+    // Module -> 2
+    // Activation Functions
+    [[nodiscard]] Tensor relu() const;
+    [[nodiscard]] Tensor sigmoid() const;
+    [[nodiscard]] Tensor tanh() const;
+    [[nodiscard]] Tensor gelu() const;
+    [[nodiscard]] Tensor softmax(int dim = -1) const;
 
   private:
     Storage data_;
