@@ -21,7 +21,7 @@ static Tensor::Shape tuple_to_shape(const py::tuple& t) {
     return indices;
 }
 
-PYBIND11_MODULE(tinytorch, m) {
+void bind_tensor(py::module_& m) {
     m.doc() = "TinyTorch Tensor Library";
 
     py::class_<Tensor>(m, "Tensor")
