@@ -13,7 +13,7 @@ TEST(LinearLayerTest, InitializationAndShapes) {
 
     auto params = layer.parameters();
     // Should have 2 parameters: Weight and Bias
-    ASSERT_EQ(params.size(), 2); 
+    ASSERT_EQ(params.size(), 2);
     EXPECT_EQ(params[0]->shape().size(), 2);
     EXPECT_EQ(params[0]->shape()[0], 3);
     EXPECT_EQ(params[0]->shape()[1], 2);
@@ -24,7 +24,7 @@ TEST(LinearLayerTest, InitializationAndShapes) {
 
 TEST(LinearLayerTest, ForwardPassShape) {
     // Fixed seed for deterministic behavior if needed
-    Linear layer(4, 3, false, 42); 
+    Linear layer(4, 3, false, 42);
 
     // Batch size 2, 4 features
     Tensor input({1, 1, 1, 1, 2, 2, 2, 2}, {2, 4});
@@ -39,7 +39,5 @@ TEST(LinearLayerTest, ForwardPassShape) {
 TEST(LinearLayerTest, NoBiasParametersCount) {
     Linear layer(5, 5, false); // No bias
     auto params = layer.parameters();
-    
-    // Should only have 1 parameter: Weight
     ASSERT_EQ(params.size(), 1);
 }

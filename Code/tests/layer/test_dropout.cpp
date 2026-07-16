@@ -11,10 +11,7 @@ TEST(DropoutLayerTest, InvalidProbabilityThrows) {
 TEST(DropoutLayerTest, InferenceModePassesThrough) {
     Dropout layer(0.5f);
     Tensor input({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
-    
-    // training = false
-    Tensor output = layer.forward(input, false); 
-
+    Tensor output = layer.forward(input, false);
     EXPECT_FLOAT_EQ(output.data()[0], 1.0f);
     EXPECT_FLOAT_EQ(output.data()[1], 2.0f);
     EXPECT_FLOAT_EQ(output.data()[2], 3.0f);
@@ -22,14 +19,8 @@ TEST(DropoutLayerTest, InferenceModePassesThrough) {
 }
 
 TEST(DropoutLayerTest, TrainingModeExtremeDrop) {
-    // Drop almost everything (p=0.999f)
-    // We can't strictly use 1.0f because of the division by zero guard/range in our code
-    Dropout layer(0.999f); 
+    Dropout layer(0.999f);
     Tensor input({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
-    
-    // training = true
-    Tensor output = layer.forward(input, true); 
-
-    // Most likely all zeros due to high drop probability
-    EXPECT_TRUE(output.data()[0] == 0.0f || output.data()[0] > 1.0f); 
+    Tensor output = layer.forward(input, true);
+    EXPECT_TRUE(output.data()[0] == 0.0f || output.data()[0] > 1.0f);
 }
