@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.28)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -9,10 +11,19 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(pybind11)
 
 pybind11_add_module(tinytorch
-    bindings.cpp
+    module.cpp
+    tensor.cpp
+    layer.cpp
 )
 
-target_link_libraries(tinytorch PRIVATE Tensor)
+target_link_libraries(tinytorch
+    PRIVATE
+        Tensor
+)
 
-target_include_directories(tinytorch PRIVATE
-    ${PROJECT_SOURCE_DIR}/include )
+
+target_include_directories(tinytorch
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/bindings
+)
