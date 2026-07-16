@@ -1,4 +1,4 @@
-#include "tensor.h"
+#include "tensor/tensor.h"
 #include <gtest/gtest.h>
 
 TEST(TensorMatMulTest, SquareMatrix) {

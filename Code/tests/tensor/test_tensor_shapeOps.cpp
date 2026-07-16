@@ -1,4 +1,4 @@
-#include "tensor.h"
+#include "tensor/tensor.h"
 #include <gtest/gtest.h>
 
 bool compare_vectors(const std::vector<float>& a, const std::vector<float>& b) {

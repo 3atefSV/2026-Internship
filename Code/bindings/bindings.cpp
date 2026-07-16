@@ -4,7 +4,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "tensor.h"
+#include "tensor/tensor.h"
 
 namespace py = pybind11;
 
@@ -36,7 +36,10 @@ PYBIND11_MODULE(tinytorch, m) {
 
         .def_property_readonly("shape", &Tensor::shape)
 
-        .def_property_readonly("data", &Tensor::data)
+        .def_property_readonly(
+            "data",
+            static_cast<const Tensor::Storage& (Tensor::*)() const>(&Tensor::data)
+        )
 
         .def_property_readonly("size", &Tensor::size)
 
