@@ -1,4 +1,4 @@
-#include "tensor.h"
+#include "tensor/tensor.h"
 #include <stdexcept>
 
 Tensor::Shape Tensor::extract_batch_shape(const Shape& shape) const {

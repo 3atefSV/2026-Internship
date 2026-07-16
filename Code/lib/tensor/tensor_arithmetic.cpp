@@ -1,4 +1,4 @@
-#include "tensor.h"
+#include "tensor/tensor.h"
 #include <functional>
 #include <stdexcept>
 

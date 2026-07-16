@@ -22,11 +22,23 @@ class Tensor {
     Tensor(const Storage& data, const Shape& shape)
         : data_(data), shape_(shape) {} // constructor with data and shape
 
+
+    Tensor(const Shape& shape)
+    : data_(compute_size(shape), 0.0f),
+      shape_(shape) {}    
+
+    void fill(value_type value)
+    {
+        std::fill(data_.begin(), data_.end(), value);
+    }
     // ================= Properties ===================
     [[nodiscard]] const Shape& shape() const noexcept {
         return shape_;
     }; // get the shape of the tensor
     [[nodiscard]] const Storage& data() const noexcept {
+        return data_;
+    }; // get the data of the tensor
+    [[nodiscard]] Storage& data() noexcept {
         return data_;
     }; // get the data of the tensor
     [[nodiscard]] size_type size() const noexcept {
@@ -43,6 +55,15 @@ class Tensor {
         return data_.empty();
     }; // check if the tensor is empty
 
+    [[nodiscard]] value_type& operator[](size_type index)
+    {
+        return data_[index];
+    }
+
+    [[nodiscard]] const value_type& operator[](size_type index) const
+    {
+        return data_[index];
+    }
     // ================= Output ==========================
     friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
     // ================= Equality ==========================
@@ -93,8 +114,8 @@ class Tensor {
                                                    // a scalar and assignment
 
     // ================= Element Access ==========================
-    value_type& operator()(const Shape& indices);
-    const value_type& operator()(const Shape& indices) const;
+    [[nodiscard]] value_type& operator()(const Shape& indices);
+    [[nodiscard]] const value_type& operator()(const Shape& indices) const;
 
     // ================= Matrix Multiplication ==========================
     [[nodiscard]] Tensor matmul(const Tensor&) const;
