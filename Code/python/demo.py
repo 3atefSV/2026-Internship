@@ -98,6 +98,34 @@ print(c)
 print("\nTo List")
 print(c.tolist())
 
+print("\nTensor Operations")
+print("reshape:")
+print(a.reshape([1, 4]))
+print("transpose:")
+print(a.transpose([1, 0]))
+print("sum scalar:")
+print(a.sum())
+print("sum axis 0:")
+print(a.sum(0))
+print("mean scalar:")
+print(a.mean())
+print("mean axis 1:")
+print(a.mean(1))
+print("max:")
+print(a.max())
+print("min:")
+print(a.min())
+
+print("\nActivation Methods")
+act = tinytorch.ReLU()
+print(act(a))
+
+sig = tinytorch.Sigmoid()
+print(sig(a))
+
+soft = tinytorch.Softmax(dim=1)
+print(soft(tinytorch.Tensor([1.0, 2.0, 3.0, 4.0], [2, 2])))
+
 print("\n3D Tensor")
 
 t = tinytorch.Tensor(
