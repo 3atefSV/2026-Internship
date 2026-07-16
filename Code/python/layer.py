@@ -107,3 +107,4 @@ print("Total Parameter Tensors :", len(params))
 for i, p in enumerate(params):
     print(f"\nParameter {i}")
     print("Shape :", p.shape)
+    
