@@ -1,9 +1,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> // Essential for std::vector, std::optional, std::shared_ptr
 
+#include "layer/dropout.h"
 #include "layer/layer.h"
 #include "layer/linear.h"
-#include "layer/dropout.h"
 #include "layer/sequential.h"
 
 namespace py = pybind11;
@@ -13,23 +13,25 @@ void bind_layers(py::module_& m) {
     // ================= Base Layer =================
     py::class_<Layer, std::shared_ptr<Layer>>(m, "Layer")
         .def("forward", &Layer::forward, py::arg("x"), py::arg("training") = true)
-        .def("__call__", [](Layer& self, const Tensor& x, bool training) {
-            return self.forward(x, training);
-        }, py::arg("x"), py::arg("training") = true)
+        .def(
+            "__call__",
+            [](Layer& self, const Tensor& x, bool training) { return self.forward(x, training); },
+            py::arg("x"), py::arg("training") = true)
         .def("parameters", &Layer::parameters, py::return_value_policy::reference);
 
     // ================= Linear Layer =================
     py::class_<Linear, Layer, std::shared_ptr<Linear>>(m, "Linear")
         .def(py::init<Tensor::size_type, Tensor::size_type, bool, std::optional<unsigned int>>(),
-             py::arg("in_features"), py::arg("out_features"), py::arg("bias") = true, py::arg("seed") = py::none())
+             py::arg("in_features"), py::arg("out_features"), py::arg("bias") = true,
+             py::arg("seed") = py::none())
         .def_property_readonly("in_features", &Linear::in_features)
         .def_property_readonly("out_features", &Linear::out_features)
         .def_property_readonly("has_bias", &Linear::has_bias);
 
     // ================= Dropout Layer =================
     py::class_<Dropout, Layer, std::shared_ptr<Dropout>>(m, "Dropout")
-        .def(py::init<Tensor::value_type, std::optional<unsigned int>>(),
-             py::arg("p") = 0.5f, py::arg("seed") = py::none())
+        .def(py::init<Tensor::value_type, std::optional<unsigned int>>(), py::arg("p") = 0.5f,
+             py::arg("seed") = py::none())
         .def_property_readonly("p", &Dropout::p);
 
     // ================= Sequential Container =================
