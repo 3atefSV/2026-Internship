@@ -10,8 +10,8 @@ class Linear : public Layer {
   public:
     // ================= Constructors =================
     // Added optional seed parameter for deterministic initialization
-    Linear(Tensor::size_type in_features, Tensor::size_type out_features, 
-           bool bias = true, std::optional<unsigned int> seed = std::nullopt);
+    Linear(Tensor::size_type in_features, Tensor::size_type out_features, bool bias = true,
+           std::optional<unsigned int> seed = std::nullopt);
     ~Linear() override = default;
 
     // ================= Core Operations =================

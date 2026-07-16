@@ -1,8 +1,9 @@
 #pragma once
 
 #include "tensor/tensor.h"
-#include <vector>
 #include <memory>
+#include <vector>
+
 // ============================================================================
 // Base Layer Class
 // ============================================================================
