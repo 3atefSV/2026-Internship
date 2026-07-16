@@ -58,9 +58,9 @@ TEST(TensorTest, NDimensionalElementAccess) {
 
 TEST(TensorTest, OutOfBoundsAccess) {
     Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
-    EXPECT_THROW(tensor({2, 0}), std::out_of_range);
-    EXPECT_THROW(tensor({0, 2}), std::out_of_range);
-    EXPECT_THROW(tensor({0, 0, 0}), std::invalid_argument);
+    EXPECT_THROW((void)tensor({2, 0}), std::out_of_range);
+    EXPECT_THROW((void)tensor({0, 2}), std::out_of_range);
+    EXPECT_THROW((void)tensor({0, 0, 0}), std::invalid_argument);
 }
 
 TEST(TensorTest, OutputOperator) {

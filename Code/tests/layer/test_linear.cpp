@@ -39,5 +39,6 @@ TEST(LinearLayerTest, ForwardPassShape) {
 TEST(LinearLayerTest, NoBiasParametersCount) {
     Linear layer(5, 5, false); // No bias
     auto params = layer.parameters();
+
     ASSERT_EQ(params.size(), 1);
 }

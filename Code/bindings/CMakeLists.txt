@@ -9,7 +9,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(pybind11)
 
 pybind11_add_module(tinytorch
-    bindings.cpp
+    tensor.cpp
 )
 
 target_link_libraries(tinytorch PRIVATE Tensor)
