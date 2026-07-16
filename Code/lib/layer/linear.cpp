@@ -5,8 +5,8 @@
 // ============================================================================
 // Linear Layer Implementation
 // ============================================================================
-Linear::Linear(Tensor::size_type in_features, Tensor::size_type out_features, 
-               bool bias, std::optional<unsigned int> seed)
+Linear::Linear(Tensor::size_type in_features, Tensor::size_type out_features, bool bias,
+               std::optional<unsigned int> seed)
     : in_features_(in_features), out_features_(out_features), use_bias_(bias),
       weight_(Tensor::Shape{in_features, out_features}),
       bias_(bias ? Tensor::Shape{out_features} : Tensor::Shape{}) {
@@ -20,7 +20,7 @@ Linear::Linear(Tensor::size_type in_features, Tensor::size_type out_features,
         gen.seed(seed.value()); // Deterministic initialization
     } else {
         std::random_device rd;
-        gen.seed(rd());         // True random initialization
+        gen.seed(rd()); // True random initialization
     }
 
     std::normal_distribution<Tensor::value_type> d(0.0f, 1.0f);

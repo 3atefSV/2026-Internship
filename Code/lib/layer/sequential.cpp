@@ -3,12 +3,9 @@
 // ============================================================================
 // Sequential Container Implementation
 // ============================================================================
-Sequential::Sequential(std::initializer_list<LayerPtr> layers)
-    : layers_(layers) {}
+Sequential::Sequential(std::initializer_list<LayerPtr> layers) : layers_(layers) {}
 
-void Sequential::add(LayerPtr layer) {
-    layers_.push_back(std::move(layer));
-}
+void Sequential::add(LayerPtr layer) { layers_.push_back(std::move(layer)); }
 
 Tensor Sequential::forward(const Tensor& x, bool training) {
     Tensor current_output = x;
