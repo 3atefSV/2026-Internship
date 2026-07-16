@@ -23,48 +23,21 @@ class Tensor {
     Tensor(const Storage& data, const Shape& shape)
         : data_(data), shape_(shape) {} // constructor with data and shape
 
+    Tensor(const Shape& shape) : data_(compute_size(shape), 0.0f), shape_(shape) {}
 
-    Tensor(const Shape& shape)
-    : data_(compute_size(shape), 0.0f),
-      shape_(shape) {}    
-
-    void fill(value_type value)
-    {
-        std::fill(data_.begin(), data_.end(), value);
-    }
+    void fill(value_type value) { std::fill(data_.begin(), data_.end(), value); }
     // ================= Properties ===================
-    [[nodiscard]] const Shape& shape() const noexcept {
-        return shape_;
-    }; // get the shape of the tensor
-    [[nodiscard]] const Storage& data() const noexcept {
-        return data_;
-    }; // get the data of the tensor
-    [[nodiscard]] Storage& data() noexcept {
-        return data_;
-    }; // get the data of the tensor
-    [[nodiscard]] size_type size() const noexcept {
-        return data_.size();
-    }; // get the size of the tensor (number of elements)
-    [[nodiscard]] size_type ndim() const noexcept {
-        return shape_.size();
-    }; // get the number of dimensions of the tensor
-    [[nodiscard]] std::string_view dtype() const noexcept {
-        return "float";
-    }; // get the data type of the tensor (currently only
-       // float is supported)
-    [[nodiscard]] bool empty() const noexcept {
-        return data_.empty();
-    }; // check if the tensor is empty
+    [[nodiscard]] const Shape& shape() const noexcept { return shape_; };
+    [[nodiscard]] const Storage& data() const noexcept { return data_; };
+    [[nodiscard]] Storage& data() noexcept { return data_; };
+    [[nodiscard]] size_type size() const noexcept { return data_.size(); };
+    [[nodiscard]] size_type ndim() const noexcept { return shape_.size(); };
+    [[nodiscard]] std::string_view dtype() const noexcept { return "float"; };
+    [[nodiscard]] bool empty() const noexcept { return data_.empty(); };
 
-    [[nodiscard]] value_type& operator[](size_type index)
-    {
-        return data_[index];
-    }
+    [[nodiscard]] value_type& operator[](size_type index) { return data_[index]; }
 
-    [[nodiscard]] const value_type& operator[](size_type index) const
-    {
-        return data_[index];
-    }
+    [[nodiscard]] const value_type& operator[](size_type index) const { return data_[index]; }
     // ================= Output ==========================
     friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
     // ================= Equality ==========================
