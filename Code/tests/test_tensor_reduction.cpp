@@ -47,5 +47,5 @@ TEST(TensorOpsTest, ReductionMeanAxis1) {
 
     EXPECT_EQ(mean_axis1.ndim(), 1);
     EXPECT_EQ(mean_axis1.shape()[0], 2);
-    EXPECT_TRUE(compare_vectors(mean_axis1.data(), expected)); 
+    EXPECT_TRUE(compare_vectors(mean_axis1.data(), expected));
 }
