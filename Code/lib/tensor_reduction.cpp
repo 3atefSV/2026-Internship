@@ -78,5 +78,5 @@ Tensor::value_type Tensor::min() const {
     if (empty()) {
         throw std::runtime_error("Cannot calculate min of an empty Tensor.");
     }
-    return *std::min_element(data_.begin(), data_.end()); 
+    return *std::min_element(data_.begin(), data_.end());
 }
