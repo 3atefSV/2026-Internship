@@ -15,5 +15,4 @@ pybind11_add_module(tinytorch
 target_link_libraries(tinytorch PRIVATE Tensor)
 
 target_include_directories(tinytorch PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
+    ${PROJECT_SOURCE_DIR}/include )
