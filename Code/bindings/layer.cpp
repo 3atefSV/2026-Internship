@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> // Essential for std::vector, std::optional, std::shared_ptr
 
+#include "activations/activations.h" // <-- Include the activations header
 #include "layer/dropout.h"
 #include "layer/layer.h"
 #include "layer/linear.h"
@@ -33,6 +34,18 @@ void bind_layers(py::module_& m) {
         .def(py::init<Tensor::value_type, std::optional<unsigned int>>(), py::arg("p") = 0.5f,
              py::arg("seed") = py::none())
         .def_property_readonly("p", &Dropout::p);
+
+    // ================= Activations =================
+    py::class_<ReLU, Layer, std::shared_ptr<ReLU>>(m, "ReLU").def(py::init<>());
+
+    py::class_<Sigmoid, Layer, std::shared_ptr<Sigmoid>>(m, "Sigmoid").def(py::init<>());
+
+    py::class_<Tanh, Layer, std::shared_ptr<Tanh>>(m, "Tanh").def(py::init<>());
+
+    py::class_<GELU, Layer, std::shared_ptr<GELU>>(m, "GELU").def(py::init<>());
+
+    py::class_<Softmax, Layer, std::shared_ptr<Softmax>>(m, "Softmax")
+        .def(py::init<int>(), py::arg("dim") = -1);
 
     // ================= Sequential Container =================
     py::class_<Sequential, Layer, std::shared_ptr<Sequential>>(m, "Sequential")

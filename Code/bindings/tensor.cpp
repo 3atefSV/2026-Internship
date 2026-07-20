@@ -133,20 +133,4 @@ void bind_tensor(py::module_& m) {
             oss << tensor;
             return oss.str();
         });
-
-    py::class_<Activation>(m, "Activation")
-        .def("forward", &Activation::forward)
-        .def("backward", &Activation::backward)
-        .def("__call__",
-             [](const Activation& activation, const Tensor& x) { return activation(x); });
-
-    py::class_<ReLU, Activation>(m, "ReLU").def(py::init<>());
-
-    py::class_<Sigmoid, Activation>(m, "Sigmoid").def(py::init<>());
-
-    py::class_<Tanh, Activation>(m, "Tanh").def(py::init<>());
-
-    py::class_<GELU, Activation>(m, "GELU").def(py::init<>());
-
-    py::class_<Softmax, Activation>(m, "Softmax").def(py::init<int>(), py::arg("dim") = -1);
 }
