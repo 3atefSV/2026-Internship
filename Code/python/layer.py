@@ -48,6 +48,16 @@ for i, p in enumerate(params):
     print(f"Parameter {i}")
     print(p)
 
+print("\n================ Activations ================")
+
+relu = tt.ReLU()
+print("ReLU Output:")
+print(relu(y))
+
+sigmoid = tt.Sigmoid()
+print("\nSigmoid Output:")
+print(sigmoid(y))
+
 print("\n================ Dropout ================")
 
 drop = tt.Dropout(
@@ -56,15 +66,14 @@ drop = tt.Dropout(
 )
 
 print("\nTraining")
-
 print(drop(y, True))
 
 print("\nInference")
-
 print(drop(y, False))
 
 print("\n================ Sequential ================")
 
+# You can now add Activations to your Sequential model!
 model = tt.Sequential()
 
 model.add(
@@ -74,6 +83,8 @@ model.add(
         seed=1
     )
 )
+
+model.add(tt.ReLU())
 
 model.add(
     tt.Dropout(
@@ -89,6 +100,9 @@ model.add(
         seed=2
     )
 )
+
+# Added Softmax at the end for classification output
+model.add(tt.Softmax(dim=1)) 
 
 print("Number of Layers :", len(model))
 print("Is Empty         :", model.empty)
