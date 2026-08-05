@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <string>
 
-
 BinaryCrossEntropyLoss::BinaryCrossEntropyLoss(Reduction reduction, Tensor::value_type epsilon)
     : Loss(reduction), epsilon_(epsilon) {
 
