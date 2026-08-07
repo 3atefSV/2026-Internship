@@ -4,8 +4,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "activations/activations.h"
-#include "tensor/tensor.h"
+#include "tensor.h"
 
 namespace py = pybind11;
 
@@ -21,7 +20,7 @@ static Tensor::Shape tuple_to_shape(const py::tuple& t) {
     return indices;
 }
 
-void bind_tensor(py::module_& m) {
+PYBIND11_MODULE(tinytorch, m) {
     m.doc() = "TinyTorch Tensor Library";
 
     py::class_<Tensor>(m, "Tensor")
@@ -37,8 +36,7 @@ void bind_tensor(py::module_& m) {
 
         .def_property_readonly("shape", &Tensor::shape)
 
-        .def_property_readonly(
-            "data", static_cast<const Tensor::Storage& (Tensor::*)() const>(&Tensor::data))
+        .def_property_readonly("data", &Tensor::data)
 
         .def_property_readonly("size", &Tensor::size)
 
@@ -78,24 +76,6 @@ void bind_tensor(py::module_& m) {
         .def("copy", [](const Tensor& tensor) { return Tensor(tensor); })
 
         .def("tolist", [](const Tensor& tensor) { return tensor.data(); })
-        .def("reshape", &Tensor::reShape)
-        .def("transpose", &Tensor::Transpose)
-        .def("sum", [](const Tensor& tensor) { return tensor.sum(); })
-        .def(
-            "sum", [](const Tensor& tensor, Tensor::size_type axis) { return tensor.sum(axis); },
-            py::arg("axis"))
-        .def("mean", [](const Tensor& tensor) { return tensor.mean(); })
-        .def(
-            "mean", [](const Tensor& tensor, Tensor::size_type axis) { return tensor.mean(axis); },
-            py::arg("axis"))
-        .def("max", &Tensor::max)
-        .def("min", &Tensor::min)
-
-        .def("relu", &Tensor::relu)
-        .def("sigmoid", &Tensor::sigmoid)
-        .def("tanh", &Tensor::tanh)
-        .def("gelu", &Tensor::gelu)
-        .def("softmax", &Tensor::softmax, py::arg("dim") = -1)
 
         // ================= Comparison =================
 

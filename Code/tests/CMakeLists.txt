@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.28)
-
 include(FetchContent)
 
 FetchContent_Declare(
@@ -12,32 +10,21 @@ FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
 
-function(add_tensor_test TARGET_NAME SOURCE_FILE)
-
-    add_executable(${TARGET_NAME}
-        ${SOURCE_FILE}
+function(add_tensor_test TEST_NAME)
+    add_executable(${TEST_NAME}
+        ${TEST_NAME}.cpp
     )
 
-    target_link_libraries(${TARGET_NAME}
+    target_link_libraries(${TEST_NAME}
         PRIVATE
             Tensor
             GTest::gtest_main
     )
 
-    gtest_discover_tests(${TARGET_NAME})
-
+    gtest_discover_tests(${TEST_NAME})
 endfunction()
 
-# ----------------- Tensor Tests -----------------
-add_tensor_test(test_tensor_properties tensor/test_tensor_properties.cpp)
-add_tensor_test(test_tensor_arithmetic tensor/test_tensor_arithmetic.cpp)
-add_tensor_test(test_tensor_matmul tensor/test_tensor_matmul.cpp)
-add_tensor_test(test_tensor_broadcast tensor/test_tensor_broadcast.cpp)
-add_tensor_test(test_tensor_reduction tensor/test_tensor_reduction.cpp)
-add_tensor_test(test_tensor_shapeOps tensor/test_tensor_shapeOps.cpp)
-
-add_tensor_test(test_tensor_activations activations/test_tensor_activations.cpp)
-
-add_tensor_test(test_layer_linear layer/test_linear.cpp)
-add_tensor_test(test_layer_dropout layer/test_dropout.cpp)
-add_tensor_test(test_layer_sequential layer/test_sequential.cpp)
+add_tensor_test(test_tensor_properties)
+add_tensor_test(test_tensor_arithmetic)
+add_tensor_test(test_tensor_matmul)
+add_tensor_test(test_tensor_broadcast)

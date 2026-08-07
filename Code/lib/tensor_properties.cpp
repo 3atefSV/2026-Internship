@@ -1,4 +1,4 @@
-#include "tensor/tensor.h"
+#include "tensor.h"
 #include <iostream>
 
 std::ostream& operator<<(std::ostream& os, const Tensor& tensor) {

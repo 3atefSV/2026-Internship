@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cmath>
 #include <cstddef>
 #include <iosfwd>
 #include <string_view>
@@ -23,21 +22,27 @@ class Tensor {
     Tensor(const Storage& data, const Shape& shape)
         : data_(data), shape_(shape) {} // constructor with data and shape
 
-    Tensor(const Shape& shape) : data_(compute_size(shape), 0.0f), shape_(shape) {}
-
-    void fill(value_type value) { std::fill(data_.begin(), data_.end(), value); }
     // ================= Properties ===================
-    [[nodiscard]] const Shape& shape() const noexcept { return shape_; };
-    [[nodiscard]] const Storage& data() const noexcept { return data_; };
-    [[nodiscard]] Storage& data() noexcept { return data_; };
-    [[nodiscard]] size_type size() const noexcept { return data_.size(); };
-    [[nodiscard]] size_type ndim() const noexcept { return shape_.size(); };
-    [[nodiscard]] std::string_view dtype() const noexcept { return "float"; };
-    [[nodiscard]] bool empty() const noexcept { return data_.empty(); };
+    [[nodiscard]] const Shape& shape() const noexcept {
+        return shape_;
+    }; // get the shape of the tensor
+    [[nodiscard]] const Storage& data() const noexcept {
+        return data_;
+    }; // get the data of the tensor
+    [[nodiscard]] size_type size() const noexcept {
+        return data_.size();
+    }; // get the size of the tensor (number of elements)
+    [[nodiscard]] size_type ndim() const noexcept {
+        return shape_.size();
+    }; // get the number of dimensions of the tensor
+    [[nodiscard]] std::string_view dtype() const noexcept {
+        return "float";
+    }; // get the data type of the tensor (currently only
+       // float is supported)
+    [[nodiscard]] bool empty() const noexcept {
+        return data_.empty();
+    }; // check if the tensor is empty
 
-    [[nodiscard]] value_type& operator[](size_type index) { return data_[index]; }
-
-    [[nodiscard]] const value_type& operator[](size_type index) const { return data_[index]; }
     // ================= Output ==========================
     friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
     // ================= Equality ==========================
@@ -88,29 +93,11 @@ class Tensor {
                                                    // a scalar and assignment
 
     // ================= Element Access ==========================
-    [[nodiscard]] value_type& operator()(const Shape& indices);
-    [[nodiscard]] const value_type& operator()(const Shape& indices) const;
+    value_type& operator()(const Shape& indices);
+    const value_type& operator()(const Shape& indices) const;
 
     // ================= Matrix Multiplication ==========================
     [[nodiscard]] Tensor matmul(const Tensor&) const;
-    // shapeOperations
-    [[nodiscard]] Tensor reShape(const Shape& new_shape) const;
-    [[nodiscard]] Tensor Transpose(const Shape& axis) const;
-    // Reduction Ops
-    [[nodiscard]] value_type sum() const noexcept;
-    [[nodiscard]] Tensor sum(size_type axis) const;
-    [[nodiscard]] value_type mean() const;
-    [[nodiscard]] Tensor mean(size_type axis) const;
-    [[nodiscard]] value_type max() const;
-    [[nodiscard]] value_type min() const;
-
-    // Module -> 2
-    // Activation Functions
-    [[nodiscard]] Tensor relu() const;
-    [[nodiscard]] Tensor sigmoid() const;
-    [[nodiscard]] Tensor tanh() const;
-    [[nodiscard]] Tensor gelu() const;
-    [[nodiscard]] Tensor softmax(int dim = -1) const;
 
   private:
     Storage data_;
@@ -133,9 +120,6 @@ class Tensor {
     static size_type ravel_index(const Shape& shape, const Shape& index);
 
     static Shape broadcast_index(const Shape& output_index, const Shape& input_shape);
-
-    static Shape reduced_shape(const Shape& shape, size_type axis);
-    static Storage reduce_axis_data(const Tensor& tensor, size_type axis, bool compute_mean);
     // ================= Helper Functions for matrix multiplication ==========================
     [[nodiscard]] Shape extract_batch_shape(const Shape& shape) const;
 };
