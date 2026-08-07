@@ -121,5 +121,5 @@ class Tensor {
 
     static Shape broadcast_index(const Shape& output_index, const Shape& input_shape);
     // ================= Helper Functions for matrix multiplication ==========================
-    [[nodiscard]] Shape extract_batch_shape(const Shape& shape) const;
+    static Shape extract_batch_shape(const Shape& shape);
 };
