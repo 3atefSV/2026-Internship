@@ -15,6 +15,7 @@ pybind11_add_module(tinytorch
     tensor.cpp
     layer.cpp
     loss.cpp
+    data.cpp
 )
 
 target_link_libraries(tinytorch

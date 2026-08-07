@@ -15,6 +15,7 @@ add_library(Tensor
     losses/mse_loss.cpp
     losses/cross_entropy_loss.cpp
     losses/binary_cross_entropy_loss.cpp
+    data/tensor_dataset.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -26,7 +27,11 @@ target_include_directories(Tensor
         ${PROJECT_SOURCE_DIR}/include/tensor
         ${PROJECT_SOURCE_DIR}/include/activations
         ${PROJECT_SOURCE_DIR}/include/layer
+<<<<<<< HEAD
         ${PROJECT_SOURCE_DIR}/include/losses
+=======
+        ${PROJECT_SOURCE_DIR}/include/data
+>>>>>>> 04a6704 (Implement Dataset and TensorDataset with bindings and tests)
 )
 
 set_target_properties(Tensor PROPERTIES
