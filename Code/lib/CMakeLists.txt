@@ -16,6 +16,7 @@ add_library(Tensor
     losses/cross_entropy_loss.cpp
     losses/binary_cross_entropy_loss.cpp
     data/tensor_dataset.cpp
+    data/transforms.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
