@@ -12,6 +12,7 @@ add_library(Tensor
     layer/dropout.cpp
     layer/sequential.cpp
     data/tensor_dataset.cpp
+    data/transforms.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
