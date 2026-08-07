@@ -130,7 +130,7 @@ Tensor operator/(const Tensor::value_type scalar, const Tensor& tensor) {
     Tensor::Storage resultData(tensor.data().size());
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
         if (tensor_data[i] == 0) {
-            throw std::invalid_argument("Division by zero in scalar-tensor division.");
+            throw std::domain_err("Division by zero in scalar-tensor division.");
         }
         resultData[i] = scalar / tensor.data()[i];
     }
