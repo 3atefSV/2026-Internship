@@ -13,6 +13,8 @@ add_library(Tensor
     layer/sequential.cpp
     data/tensor_dataset.cpp
     data/transforms.cpp
+    data/dataloader.cpp
+    data/image_dataset.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
