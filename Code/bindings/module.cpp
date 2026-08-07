@@ -1,6 +1,7 @@
 #include "bindings.h"
 
-PYBIND11_MODULE(tinytorch, m) {
+PYBIND11_MODULE(tinytorch, m)
+{
     m.doc() = "TinyTorch";
 
     bind_tensor(m);
