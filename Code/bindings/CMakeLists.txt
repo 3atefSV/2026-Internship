@@ -17,6 +17,7 @@ pybind11_add_module(tinytorch
     loss.cpp
     data.cpp
     transforms.cpp
+    dataloader.cpp
 )
 
 target_link_libraries(tinytorch
