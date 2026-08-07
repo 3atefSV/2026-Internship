@@ -35,9 +35,15 @@ add_tensor_test(test_tensor_matmul tensor/test_tensor_matmul.cpp)
 add_tensor_test(test_tensor_broadcast tensor/test_tensor_broadcast.cpp)
 add_tensor_test(test_tensor_reduction tensor/test_tensor_reduction.cpp)
 add_tensor_test(test_tensor_shapeOps tensor/test_tensor_shapeOps.cpp)
+add_tensor_test(test_tensor_log_softmax tensor/test_tensor_log_softmax.cpp)
 
 add_tensor_test(test_tensor_activations activations/test_tensor_activations.cpp)
 
 add_tensor_test(test_layer_linear layer/test_linear.cpp)
 add_tensor_test(test_layer_dropout layer/test_dropout.cpp)
 add_tensor_test(test_layer_sequential layer/test_sequential.cpp)
+
+# ----------------- Loss Tests -----------------
+add_tensor_test(test_loss_mse losses/test_mse_loss.cpp)
+add_tensor_test(test_loss_cross_entropy losses/test_cross_entropy_loss.cpp)
+add_tensor_test(test_loss_binary_cross_entropy losses/test_binary_cross_entropy_loss.cpp)
