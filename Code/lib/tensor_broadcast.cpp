@@ -1,5 +1,6 @@
 #include "tensor.h"
 #include <stdexcept>
+#include <cassert>
 
 Tensor::Shape Tensor::broadcast_shape(const Shape& lhs, const Shape& rhs) {
 
@@ -50,7 +51,7 @@ Tensor::size_type Tensor::ravel_index(const Shape& indices, const Shape& shape) 
 
 Tensor::Shape Tensor::broadcast_index(const Shape& output_index, const Shape& input_shape) {
     Shape index(input_shape.size());
-
+    assert(output_index.size() >= input_shape.size());
     const size_type offset = output_index.size() - input_shape.size();
 
     for (size_type i = 0; i < input_shape.size(); ++i) {
