@@ -43,3 +43,4 @@ add_test(test_layer_dropout layer/test_dropout.cpp)
 add_test(test_layer_sequential layer/test_sequential.cpp)
 
 add_test(test_dataset data/test_dataset.cpp)
+add_test(test_transform data/test_transforms.cpp)

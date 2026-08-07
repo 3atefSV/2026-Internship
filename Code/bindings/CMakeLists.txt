@@ -15,6 +15,7 @@ pybind11_add_module(tinytorch
     tensor.cpp
     layer.cpp
     data.cpp
+    transforms.cpp
 )
 
 target_link_libraries(tinytorch
