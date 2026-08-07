@@ -11,6 +11,10 @@ add_library(Tensor
     layer/linear.cpp
     layer/dropout.cpp
     layer/sequential.cpp
+    losses/loss.cpp
+    losses/mse_loss.cpp
+    losses/cross_entropy_loss.cpp
+    losses/binary_cross_entropy_loss.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -22,6 +26,7 @@ target_include_directories(Tensor
         ${PROJECT_SOURCE_DIR}/include/tensor
         ${PROJECT_SOURCE_DIR}/include/activations
         ${PROJECT_SOURCE_DIR}/include/layer
+        ${PROJECT_SOURCE_DIR}/include/losses
 )
 
 set_target_properties(Tensor PROPERTIES
