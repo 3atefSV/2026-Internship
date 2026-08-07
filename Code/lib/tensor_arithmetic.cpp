@@ -126,9 +126,10 @@ Tensor Tensor::operator/(const value_type scalar) const {
 }
 
 Tensor operator/(const Tensor::value_type scalar, const Tensor& tensor) {
+    const auto& tensor_data = tensor.data();
     Tensor::Storage resultData(tensor.data().size());
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
-        if (tensor.data()[i] == 0) {
+        if (tensor_data[i] == 0) {
             throw std::invalid_argument("Division by zero in scalar-tensor division.");
         }
         resultData[i] = scalar / tensor.data()[i];
