@@ -1,7 +1,7 @@
 #include "tensor.h"
 #include <stdexcept>
 
-Tensor::Shape Tensor::extract_batch_shape(const Shape& shape) const {
+Tensor::Shape Tensor::extract_batch_shape(const Shape& shape) {
     if (shape.size() < 2) {
         throw std::invalid_argument(
             "Tensor must have at least 2 dimensions for matrix multiplication.");
