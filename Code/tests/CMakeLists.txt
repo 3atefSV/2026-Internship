@@ -12,7 +12,7 @@ FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
 
-function(add_tensor_test TARGET_NAME SOURCE_FILE)
+function(add_test TARGET_NAME SOURCE_FILE)
 
     add_executable(${TARGET_NAME}
         ${SOURCE_FILE}
@@ -29,15 +29,17 @@ function(add_tensor_test TARGET_NAME SOURCE_FILE)
 endfunction()
 
 # ----------------- Tensor Tests -----------------
-add_tensor_test(test_tensor_properties tensor/test_tensor_properties.cpp)
-add_tensor_test(test_tensor_arithmetic tensor/test_tensor_arithmetic.cpp)
-add_tensor_test(test_tensor_matmul tensor/test_tensor_matmul.cpp)
-add_tensor_test(test_tensor_broadcast tensor/test_tensor_broadcast.cpp)
-add_tensor_test(test_tensor_reduction tensor/test_tensor_reduction.cpp)
-add_tensor_test(test_tensor_shapeOps tensor/test_tensor_shapeOps.cpp)
+add_test(test_tensor_properties tensor/test_tensor_properties.cpp)
+add_test(test_tensor_arithmetic tensor/test_tensor_arithmetic.cpp)
+add_test(test_tensor_matmul tensor/test_tensor_matmul.cpp)
+add_test(test_tensor_broadcast tensor/test_tensor_broadcast.cpp)
+add_test(test_tensor_reduction tensor/test_tensor_reduction.cpp)
+add_test(test_tensor_shapeOps tensor/test_tensor_shapeOps.cpp)
 
-add_tensor_test(test_tensor_activations activations/test_tensor_activations.cpp)
+add_test(test_tensor_activations activations/test_tensor_activations.cpp)
 
-add_tensor_test(test_layer_linear layer/test_linear.cpp)
-add_tensor_test(test_layer_dropout layer/test_dropout.cpp)
-add_tensor_test(test_layer_sequential layer/test_sequential.cpp)
+add_test(test_layer_linear layer/test_linear.cpp)
+add_test(test_layer_dropout layer/test_dropout.cpp)
+add_test(test_layer_sequential layer/test_sequential.cpp)
+
+add_test(test_dataset data/test_dataset.cpp)

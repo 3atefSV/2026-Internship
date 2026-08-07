@@ -11,6 +11,7 @@ add_library(Tensor
     layer/linear.cpp
     layer/dropout.cpp
     layer/sequential.cpp
+    data/tensor_dataset.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -22,6 +23,7 @@ target_include_directories(Tensor
         ${PROJECT_SOURCE_DIR}/include/tensor
         ${PROJECT_SOURCE_DIR}/include/activations
         ${PROJECT_SOURCE_DIR}/include/layer
+        ${PROJECT_SOURCE_DIR}/include/data
 )
 
 set_target_properties(Tensor PROPERTIES
