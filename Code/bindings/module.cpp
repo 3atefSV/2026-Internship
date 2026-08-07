@@ -7,4 +7,5 @@ PYBIND11_MODULE(tinytorch, m) {
     bind_layers(m);
     bind_data(m);
     bind_transforms(m);
+    bind_dataloader(m);
 }
