@@ -37,12 +37,12 @@ Tensor BinaryCrossEntropyLoss::forward(const Tensor& probabilities, const Tensor
 
     // return reduce((positive_term + negative_term) * -1.0f);
     Tensor result = reduce((positive_term + negative_term) * -1.0f);
-    if(probabilities.requires_grad() || targets.requires_grad()) {
+    if (probabilities.requires_grad() || targets.requires_grad()) {
         result.set_requires_grad(true);
-        result.grad_fn_ = std::make_shared<BCEBackward>(probabilities, targets, reduction(), epsilon_);
+        result.grad_fn_ =
+            std::make_shared<BCEBackward>(probabilities, targets, reduction(), epsilon_);
     }
     return result;
-
 }
 
 void BinaryCrossEntropyLoss::check_in_unit_interval(const Tensor& tensor, const char* name) {

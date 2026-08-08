@@ -56,9 +56,10 @@ Tensor CrossEntropyLoss::forward(const Tensor& logits, const IndexList& targets)
 
     // return reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
     Tensor result = reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
-    if(logits.requires_grad() || !targets.empty()) {
+    if (logits.requires_grad() || !targets.empty()) {
         result.set_requires_grad(true);
-        result.grad_fn_ = std::make_shared<CrossEntropyBackward>(logits, targets, reduction() , batched);
+        result.grad_fn_ =
+            std::make_shared<CrossEntropyBackward>(logits, targets, reduction(), batched);
     }
     return result;
 }

@@ -21,5 +21,4 @@ Tensor MSELoss::forward(const Tensor& prediction, const Tensor& target) const {
     }
 
     return result;
-
 }

@@ -2,16 +2,15 @@
 
 #include "data/dataset.h"
 #include "data/transforms.h"
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 class ImageDataset : public Dataset {
   public:
-    ImageDataset(const std::vector<std::string>& image_paths, 
-                 const std::vector<Tensor>& labels,
+    ImageDataset(const std::vector<std::string>& image_paths, const std::vector<Tensor>& labels,
                  std::shared_ptr<Transform> transform = nullptr);
-                 
+
     ~ImageDataset() override = default;
 
     [[nodiscard]] Tensor::size_type size() const override;

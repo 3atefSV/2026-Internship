@@ -1,5 +1,5 @@
-#include "tensor/tensor.h"
 #include "autograd/function.h"
+#include "tensor/tensor.h"
 #include <stdexcept>
 
 void Tensor::set_requires_grad(bool req) {
@@ -18,7 +18,8 @@ void Tensor::zero_grad() {
 }
 
 void Tensor::backward(const std::optional<Tensor>& gradient) {
-    if (!requires_grad_) return;
+    if (!requires_grad_)
+        return;
 
     Tensor current_grad;
     if (gradient.has_value()) {

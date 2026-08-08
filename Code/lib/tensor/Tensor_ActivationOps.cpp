@@ -1,5 +1,5 @@
-#include "tensor/tensor.h"
 #include "autograd/function.h"
+#include "tensor/tensor.h"
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -58,10 +58,9 @@ Tensor Tensor::sigmoid() const {
     Tensor result(result_data, shape_);
     if (requires_grad_) {
         result.set_requires_grad(true);
-        result.grad_fn_ = std::make_shared<SigmoidBackward>(*this,result);
+        result.grad_fn_ = std::make_shared<SigmoidBackward>(*this, result);
     }
     return result;
-
 }
 
 Tensor Tensor::tanh() const {
@@ -74,9 +73,9 @@ Tensor Tensor::tanh() const {
     Tensor result(result_data, shape_);
     if (requires_grad_) {
         result.set_requires_grad(true);
-        result.grad_fn_ = std::make_shared<TanhBackward>(*this,result);
+        result.grad_fn_ = std::make_shared<TanhBackward>(*this, result);
     }
-    
+
     return result;
 }
 

@@ -56,6 +56,7 @@ class TransposeBackward : public Function {
   public:
     TransposeBackward(const Tensor& a, const Tensor::Shape& axes);
     [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+
   private:
     Tensor::Shape axes_;
 };
@@ -71,6 +72,7 @@ class SigmoidBackward : public Function {
   public:
     SigmoidBackward(const Tensor& input, const Tensor& output);
     [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+
   private:
     Tensor output_;
 };
@@ -79,6 +81,7 @@ class TanhBackward : public Function {
   public:
     TanhBackward(const Tensor& input, const Tensor& output);
     [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+
   private:
     Tensor output_;
 };
@@ -93,6 +96,7 @@ class SoftmaxBackward : public Function {
   public:
     SoftmaxBackward(const Tensor& input, const Tensor& output, int dim);
     [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+
   private:
     Tensor output_;
     int dim_;

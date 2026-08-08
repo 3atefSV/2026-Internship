@@ -1,6 +1,6 @@
-#include "tensor/tensor.h"
-#include "losses/mse_loss.h"
 #include "losses/cross_entropy_loss.h"
+#include "losses/mse_loss.h"
+#include "tensor/tensor.h"
 #include <gtest/gtest.h>
 
 TEST(AutogradIntegrationTest, ReLUGradient) {
@@ -9,7 +9,7 @@ TEST(AutogradIntegrationTest, ReLUGradient) {
     x.set_requires_grad(true);
 
     Tensor y = x.relu(); // y = [0.0, 1.0, 3.0]
-    
+
     // Default upstream gradient = [1, 1, 1]
     Tensor grad_out({1.0f, 1.0f, 1.0f}, {3});
     y.backward(grad_out);
@@ -25,7 +25,7 @@ TEST(AutogradIntegrationTest, SigmoidGradient) {
     Tensor x({0.0f}, {1}); // sigmoid(0) = 0.5
     x.set_requires_grad(true);
 
-    Tensor y = x.sigmoid(); 
+    Tensor y = x.sigmoid();
     y.backward(); // Scalar backward seeds with 1.0
 
     // ds/dx = s * (1 - s) = 0.5 * 0.5 = 0.25

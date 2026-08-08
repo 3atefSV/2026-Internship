@@ -34,7 +34,7 @@ MatmulBackward::MatmulBackward(const Tensor& a, const Tensor& b) { saved_tensors
 std::vector<Tensor> MatmulBackward::apply(const Tensor& grad_output) {
     const Tensor& a = saved_tensors[0];
     const Tensor& b = saved_tensors[1];
-    
+
     size_t M = a.shape()[0];
     size_t K = a.shape()[1];
     size_t N = b.shape()[1];
@@ -73,8 +73,8 @@ std::vector<Tensor> ReshapeBackward::apply(const Tensor& grad_output) {
 }
 
 // ================= TransposeBackward =================
-TransposeBackward::TransposeBackward(const Tensor& a, const Tensor::Shape& axes) : axes_(axes) { 
-    saved_tensors = {a}; 
+TransposeBackward::TransposeBackward(const Tensor& a, const Tensor::Shape& axes) : axes_(axes) {
+    saved_tensors = {a};
 }
 std::vector<Tensor> TransposeBackward::apply(const Tensor& grad_output) {
     return {grad_output.Transpose(axes_)};
@@ -92,8 +92,8 @@ std::vector<Tensor> ReLUBackward::apply(const Tensor& grad_output) {
 }
 
 // ================= SigmoidBackward =================
-SigmoidBackward::SigmoidBackward(const Tensor& input, const Tensor& output) : output_(output) { 
-    saved_tensors = {input}; 
+SigmoidBackward::SigmoidBackward(const Tensor& input, const Tensor& output) : output_(output) {
+    saved_tensors = {input};
 }
 std::vector<Tensor> SigmoidBackward::apply(const Tensor& grad_output) {
     Tensor::Storage res(output_.data().size());
@@ -104,8 +104,8 @@ std::vector<Tensor> SigmoidBackward::apply(const Tensor& grad_output) {
 }
 
 // ================= TanhBackward =================
-TanhBackward::TanhBackward(const Tensor& input, const Tensor& output) : output_(output) { 
-    saved_tensors = {input}; 
+TanhBackward::TanhBackward(const Tensor& input, const Tensor& output) : output_(output) {
+    saved_tensors = {input};
 }
 std::vector<Tensor> TanhBackward::apply(const Tensor& grad_output) {
     Tensor::Storage res(output_.data().size());
@@ -122,15 +122,15 @@ std::vector<Tensor> GELUBackward::apply(const Tensor& grad_output) {
     Tensor::Storage res(x.data().size());
     for (size_t i = 0; i < x.data().size(); ++i) {
         // Simplified proxy for GELU derivative
-        res[i] = grad_output.data()[i]; 
+        res[i] = grad_output.data()[i];
     }
     return {Tensor(res, x.shape())};
 }
 
 // ================= SoftmaxBackward =================
-SoftmaxBackward::SoftmaxBackward(const Tensor& input, const Tensor& output, int dim) 
-    : output_(output), dim_(dim) { 
-    saved_tensors = {input}; 
+SoftmaxBackward::SoftmaxBackward(const Tensor& input, const Tensor& output, int dim)
+    : output_(output), dim_(dim) {
+    saved_tensors = {input};
 }
 std::vector<Tensor> SoftmaxBackward::apply(const Tensor& grad_output) {
     // Simplified element-wise fallback for independent softmax backward
