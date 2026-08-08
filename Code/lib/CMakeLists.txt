@@ -15,6 +15,7 @@ add_library(Tensor
     data/transforms.cpp
     data/dataloader.cpp
     data/image_dataset.cpp
+    tensor/tensor_autograd.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
