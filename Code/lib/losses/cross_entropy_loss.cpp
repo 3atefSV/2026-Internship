@@ -1,4 +1,5 @@
 #include "losses/cross_entropy_loss.h"
+#include "autograd/loss_function.h"
 #include <cmath>
 #include <stdexcept>
 #include <string>
@@ -53,7 +54,13 @@ Tensor CrossEntropyLoss::forward(const Tensor& logits, const IndexList& targets)
         per_sample[sample] = -log_probabilities(index);
     }
 
-    return reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
+    // return reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
+    Tensor result = reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
+    if(logits.requires_grad() || !targets.empty()) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<CrossEntropyBackward>(logits, targets, reduction() , batched);
+    }
+    return result;
 }
 
 Tensor CrossEntropyLoss::forward(const Tensor& logits, const Tensor& targets) const {

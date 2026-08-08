@@ -11,8 +11,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(pybind11)
 
 pybind11_add_module(tinytorch
-    loss.cpp
-    dataloader.cpp
+    losses/loss.cpp
     core/module.cpp
     core/tensor.cpp
     layer/layer.cpp
