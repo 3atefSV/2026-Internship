@@ -128,31 +128,31 @@ void bind_tensor(py::module_& m) {
                  return oss.str();
              })
 
-        .def("__str__", [](const Tensor& tensor) {
-            std::ostringstream oss;
-            oss << tensor;
-            return oss.str();
-        })
+        .def("__str__",
+             [](const Tensor& tensor) {
+                 std::ostringstream oss;
+                 oss << tensor;
+                 return oss.str();
+             })
 
         // Property to get/set requires_grad
-        .def_property("requires_grad", 
-                      &Tensor::requires_grad, 
-                      &Tensor::set_requires_grad)
+        .def_property("requires_grad", &Tensor::requires_grad, &Tensor::set_requires_grad)
 
         // Read-only property to get the gradient tensor (returns None if no grad)
-        .def_property_readonly("grad", [](const Tensor& tensor) -> std::optional<Tensor> {
-            if (tensor.grad_) {
-                return *tensor.grad_;
-            }
-            return std::nullopt;
-        })
+        .def_property_readonly("grad",
+                               [](const Tensor& tensor) -> std::optional<Tensor> {
+                                   if (tensor.grad_) {
+                                       return *tensor.grad_;
+                                   }
+                                   return std::nullopt;
+                               })
 
         // Backward method
-        .def("backward", [](Tensor& tensor, std::optional<Tensor> gradient) {
-            tensor.backward(gradient);
-        }, py::arg("gradient") = py::none())
+        .def(
+            "backward",
+            [](Tensor& tensor, std::optional<Tensor> gradient) { tensor.backward(gradient); },
+            py::arg("gradient") = py::none())
 
         // Zero grad
         .def("zero_grad", &Tensor::zero_grad);
-
 }
