@@ -15,7 +15,7 @@ TEST(AutogradCoreTest, RequiresGradInitialization) {
 TEST(AutogradCoreTest, ZeroGrad) {
     Tensor t({1.0f}, {1});
     t.set_requires_grad(true);
-    
+
     // Simulate some gradient accumulation
     t.grad_->data()[0] = 5.0f;
     EXPECT_FLOAT_EQ(t.grad_->data()[0], 5.0f);
