@@ -11,13 +11,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(pybind11)
 
 pybind11_add_module(tinytorch
-    module.cpp
-    tensor.cpp
-    layer.cpp
     loss.cpp
-    data.cpp
-    transforms.cpp
     dataloader.cpp
+    core/module.cpp
+    core/tensor.cpp
+    layer/layer.cpp
+    data/data.cpp
+    data/dataloader.cpp
+    transforms/transforms.cpp
 )
 
 target_link_libraries(tinytorch
