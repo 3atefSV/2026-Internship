@@ -5,28 +5,37 @@ build_path = Path(__file__).resolve().parents[1] / "build" / "bindings"
 sys.path.append(str(build_path))
 import tinytorch as tt
 
-print("=" * 60)
-print("Autograd Core Engine Demo")
-print("=" * 60)
+def print_test_header(title):
+    print("\n" + "=" * 50)
+    print(f" {title}")
+    print("=" * 50)
 
-# 1. Test requires_grad property
-x = tt.Tensor([1.5, 2.5], [2])
-print(f"Default requires_grad: {x.requires_grad}")
+print_test_header("1. Arithmetic Operations Chain Rule")
+
+x = tt.Tensor([4.0], [1])
+y = tt.Tensor([2.0], [1])
 
 x.requires_grad = True
-print(f"Updated requires_grad: {x.requires_grad}")
-print(f"Initial grad values  : {x.grad.tolist()}")
+y.requires_grad = True
 
-# 2. Test scalar backward (Base case of backprop)
-print("\n--- Scalar Backward Test ---")
-scalar_loss = tt.Tensor([42.0], [1])
-scalar_loss.requires_grad = True
+# Equation: z = (x + y) * (x - y) / x
+# Values: x = 4, y = 2
+# (4 + 2) * (4 - 2) / 4 = (6 * 2) / 4 = 3.0
+z = (x + y) * (x - y) / x
 
-print("Calling backward() on scalar...")
-scalar_loss.backward()
-print(f"Scalar gradient (should be 1.0): {scalar_loss.grad.tolist()}")
+print(f"z (Forward) : {z.tolist()} (Expected: [3.0])")
 
-# 3. Test zero_grad
-print("\n--- Zero Grad Test ---")
-scalar_loss.zero_grad()
-print(f"Gradient after zero_grad()     : {scalar_loss.grad.tolist()}")
+# Run backward pass
+z.backward()
+
+print(f"x.grad      : {x.grad.tolist()} (Expected: [1.25])")
+print(f"y.grad      : {y.grad.tolist()} (Expected: [-1.0])")
+
+print_test_header("2. Gradient Accumulation (zero_grad)")
+# Call backward again without zeroing
+z.backward()
+print(f"x.grad (accumulated): {x.grad.tolist()} (Expected: [2.5])")
+
+x.zero_grad()
+y.zero_grad()
+print(f"x.grad (after zero): {x.grad.tolist()} (Expected: [0.0])")
