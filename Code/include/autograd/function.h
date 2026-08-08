@@ -36,3 +36,23 @@ class DivBackward : public Function {
     DivBackward(const Tensor& a, const Tensor& b);
     [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
 };
+
+class MatmulBackward : public Function {
+  public:
+    MatmulBackward(const Tensor& a, const Tensor& b);
+    [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+};
+
+class ReshapeBackward : public Function {
+  public:
+    explicit ReshapeBackward(const Tensor& a);
+    [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+};
+
+class TransposeBackward : public Function {
+  public:
+    TransposeBackward(const Tensor& a, const Tensor::Shape& axes);
+    [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+  private:
+    Tensor::Shape axes_;
+};

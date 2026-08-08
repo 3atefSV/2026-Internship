@@ -1,5 +1,6 @@
 #include "tensor/tensor.h"
 #include <stdexcept>
+#include "autograd/function.h"
 
 Tensor::Shape Tensor::extract_batch_shape(const Shape& shape) const {
     if (shape.size() < 2) {
@@ -63,5 +64,13 @@ Tensor Tensor::matmul(const Tensor& other) const {
         }
     }
 
-    return Tensor(resultData, result_shape);
+    Tensor result(resultData, result_shape);
+
+    // ================= Autograd Wiring =================
+    if (this->requires_grad_ || other.requires_grad_) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<MatmulBackward>(*this, other);
+    }
+
+    return result;
 }
