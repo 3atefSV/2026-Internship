@@ -36,8 +36,8 @@ std::vector<Tensor> MatmulBackward::apply(const Tensor& grad_output) {
     Tensor a_T = saved_tensors[0].Transpose({1, 0}); // Transpose 2D
     Tensor b_T = saved_tensors[1].Transpose({1, 0}); // Transpose 2D
 
-    Tensor grad_a = grad_output.matmul(b_T); 
-    Tensor grad_b = a_T.matmul(grad_output); 
+    Tensor grad_a = grad_output.matmul(b_T);
+    Tensor grad_b = a_T.matmul(grad_output);
     return {grad_a, grad_b};
 }
 
@@ -49,10 +49,10 @@ std::vector<Tensor> ReshapeBackward::apply(const Tensor& grad_output) {
 }
 
 // ================= TransposeBackward =================
-TransposeBackward::TransposeBackward(const Tensor& a, const Tensor::Shape& axes) : axes_(axes) { 
-    saved_tensors = {a}; 
+TransposeBackward::TransposeBackward(const Tensor& a, const Tensor::Shape& axes) : axes_(axes) {
+    saved_tensors = {a};
 }
 std::vector<Tensor> TransposeBackward::apply(const Tensor& grad_output) {
-    // For a simple 2D transpose {1, 0}, applying it again reverts it. 
+    // For a simple 2D transpose {1, 0}, applying it again reverts it.
     return {grad_output.Transpose(axes_)};
 }

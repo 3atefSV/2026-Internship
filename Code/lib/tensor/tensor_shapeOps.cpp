@@ -1,5 +1,5 @@
+#include "autograd/function.h"
 #include "tensor/tensor.h"
-#include "autograd/function.h" 
 #include <algorithm>
 #include <numeric>
 #include <stdexcept>
@@ -15,7 +15,7 @@ Tensor Tensor::reShape(const Shape& new_shape) const {
     }
 
     Tensor reshapedTensor(this->data_, new_shape);
-    if(this->requires_grad_) {
+    if (this->requires_grad_) {
         reshapedTensor.set_requires_grad(true);
         reshapedTensor.grad_fn_ = std::make_shared<ReshapeBackward>(*this);
     }

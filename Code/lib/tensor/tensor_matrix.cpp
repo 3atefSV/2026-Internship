@@ -1,6 +1,6 @@
+#include "autograd/function.h"
 #include "tensor/tensor.h"
 #include <stdexcept>
-#include "autograd/function.h"
 
 Tensor::Shape Tensor::extract_batch_shape(const Shape& shape) const {
     if (shape.size() < 2) {

@@ -3,10 +3,10 @@
 #include <cmath>
 #include <cstddef>
 #include <iosfwd>
+#include <memory>
+#include <optional>
 #include <string_view>
 #include <vector>
-#include <memory>    
-#include <optional>
 
 class Function;
 class Tensor {
@@ -122,7 +122,7 @@ class Tensor {
     // ================= Autograd Properties =================
     void set_requires_grad(bool req);
     [[nodiscard]] bool requires_grad() const noexcept { return requires_grad_; }
-    
+
     void backward(const std::optional<Tensor>& gradient = std::nullopt);
     void zero_grad();
 
@@ -130,7 +130,7 @@ class Tensor {
     Storage data_;
     Shape shape_;
     bool requires_grad_ = false;
-    
+
     template <typename BinaryOp>
     [[nodiscard]] Tensor apply_tensor_operation(const Tensor& other, BinaryOp op,
                                                 bool check_division = false) const;

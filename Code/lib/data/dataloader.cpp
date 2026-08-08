@@ -1,12 +1,13 @@
 #include "data/dataloader.h"
-#include <numeric>
 #include <algorithm>
+#include <numeric>
 
-DataLoader::DataLoader(const Dataset& dataset, Tensor::size_type batch_size, bool shuffle, std::optional<unsigned int> seed)
+DataLoader::DataLoader(const Dataset& dataset, Tensor::size_type batch_size, bool shuffle,
+                       std::optional<unsigned int> seed)
     : dataset_(dataset), batch_size_(batch_size), shuffle_(shuffle) {
-    
+
     indices_.resize(dataset_.size());
-    std::iota(indices_.begin(), indices_.end(), 0); 
+    std::iota(indices_.begin(), indices_.end(), 0);
 
     if (seed.has_value()) {
         gen_.seed(seed.value());
@@ -23,7 +24,7 @@ void DataLoader::reset_indices() const {
 }
 
 Tensor::size_type DataLoader::size() const {
-    return (dataset_.size() + batch_size_ - 1) / batch_size_; 
+    return (dataset_.size() + batch_size_ - 1) / batch_size_;
 }
 
 DataLoader::Iterator DataLoader::begin() const {
@@ -31,16 +32,16 @@ DataLoader::Iterator DataLoader::begin() const {
     return Iterator(*this, 0);
 }
 
-DataLoader::Iterator DataLoader::end() const {
-    return Iterator(*this, size());
-}
+DataLoader::Iterator DataLoader::end() const { return Iterator(*this, size()); }
 
-std::vector<Tensor> DataLoader::collate_batch(const std::vector<std::vector<Tensor>>& batch_samples) const {
-    if (batch_samples.empty()) return {};
+std::vector<Tensor>
+DataLoader::collate_batch(const std::vector<std::vector<Tensor>>& batch_samples) const {
+    if (batch_samples.empty())
+        return {};
 
     Tensor::size_type current_batch_size = batch_samples.size();
     Tensor::size_type num_tensors = batch_samples[0].size();
-    
+
     std::vector<Tensor> batched_tensors;
     batched_tensors.reserve(num_tensors);
 
@@ -53,7 +54,7 @@ std::vector<Tensor> DataLoader::collate_batch(const std::vector<std::vector<Tens
 
         for (Tensor::size_type b = 0; b < current_batch_size; ++b) {
             const auto& sample_data = batch_samples[b][t].data();
-            std::copy(sample_data.begin(), sample_data.end(), 
+            std::copy(sample_data.begin(), sample_data.end(),
                       batched_data.begin() + (b * single_sample_size));
         }
 
@@ -69,7 +70,7 @@ DataLoader::Iterator::Iterator(const DataLoader& loader, Tensor::size_type batch
 std::vector<Tensor> DataLoader::Iterator::operator*() const {
     Tensor::size_type start_idx = batch_idx_ * loader_.batch_size_;
     Tensor::size_type end_idx = std::min(start_idx + loader_.batch_size_, loader_.dataset_.size());
-    
+
     std::vector<std::vector<Tensor>> batch_samples;
     batch_samples.reserve(end_idx - start_idx);
 

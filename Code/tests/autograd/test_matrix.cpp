@@ -4,10 +4,10 @@
 TEST(AutogradMatrixTest, MatmulGradient) {
     // X = [1, 2] (Shape: 1x2)
     Tensor X({1.0f, 2.0f}, {1, 2});
-    
+
     // W = [[3, 4], [5, 6]] (Shape: 2x2)
     Tensor W({3.0f, 4.0f, 5.0f, 6.0f}, {2, 2});
-    
+
     X.set_requires_grad(true);
     W.set_requires_grad(true);
 

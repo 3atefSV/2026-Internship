@@ -53,6 +53,7 @@ class TransposeBackward : public Function {
   public:
     TransposeBackward(const Tensor& a, const Tensor::Shape& axes);
     [[nodiscard]] std::vector<Tensor> apply(const Tensor& grad_output) override;
+
   private:
     Tensor::Shape axes_;
 };
