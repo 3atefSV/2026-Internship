@@ -1,4 +1,5 @@
 #include "tensor/tensor.h"
+#include "autograd/function.h"
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -39,8 +40,12 @@ Tensor Tensor::relu() const {
     for (size_type i = 0; i < data_.size(); ++i) {
         result_data[i] = data_[i] > 0.0f ? data_[i] : 0.0f;
     }
-
-    return Tensor(result_data, shape_);
+    Tensor result(result_data, shape_);
+    if (requires_grad_) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<ReLUBackward>(*this);
+    }
+    return result;
 }
 
 Tensor Tensor::sigmoid() const {
@@ -50,7 +55,13 @@ Tensor Tensor::sigmoid() const {
         result_data[i] = sigmoid_stable(data_[i]);
     }
 
-    return Tensor(result_data, shape_);
+    Tensor result(result_data, shape_);
+    if (requires_grad_) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<SigmoidBackward>(*this,result);
+    }
+    return result;
+
 }
 
 Tensor Tensor::tanh() const {
@@ -60,7 +71,13 @@ Tensor Tensor::tanh() const {
         result_data[i] = std::tanh(data_[i]);
     }
 
-    return Tensor(result_data, shape_);
+    Tensor result(result_data, shape_);
+    if (requires_grad_) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<TanhBackward>(*this,result);
+    }
+    
+    return result;
 }
 
 Tensor Tensor::gelu() const {
@@ -72,7 +89,12 @@ Tensor Tensor::gelu() const {
         result_data[i] = x * sig;
     }
 
-    return Tensor(result_data, shape_);
+    Tensor result(result_data, shape_);
+    if (requires_grad_) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<GELUBackward>(*this);
+    }
+    return result;
 }
 
 Tensor Tensor::softmax(int dim) const {
@@ -148,7 +170,12 @@ Tensor Tensor::softmax(int dim) const {
         }
     }
 
-    return Tensor(result_data, shape_);
+    Tensor result(result_data, shape_);
+    if (requires_grad_) {
+        result.set_requires_grad(true);
+        result.grad_fn_ = std::make_shared<SoftmaxBackward>(*this, result, dim);
+    }
+    return result;
 }
 
 // Numerically stable log(softmax(x)) along a single dimension.

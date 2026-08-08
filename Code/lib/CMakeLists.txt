@@ -21,6 +21,7 @@ add_library(Tensor
     data/image_dataset.cpp
     tensor/tensor_autograd.cpp
     autograd/function.cpp
+    autograd/loss_function.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -34,6 +35,7 @@ target_include_directories(Tensor
         ${PROJECT_SOURCE_DIR}/include/layer
         ${PROJECT_SOURCE_DIR}/include/losses
         ${PROJECT_SOURCE_DIR}/include/data
+        ${PROJECT_SOURCE_DIR}/include/autograd
 )
 
 set_target_properties(Tensor PROPERTIES
