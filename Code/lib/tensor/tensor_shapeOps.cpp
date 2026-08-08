@@ -1,8 +1,8 @@
+#include "autograd/function.h"
 #include "tensor/tensor.h"
 #include <algorithm>
 #include <numeric>
 #include <stdexcept>
-
 Tensor Tensor::reShape(const Shape& new_shape) const {
     // must ensure that the data is the same in the new shape
     size_type newSize{1};
@@ -13,7 +13,13 @@ Tensor Tensor::reShape(const Shape& new_shape) const {
     if (newSize != this->size()) {
         throw std::invalid_argument("CannotReshape , total number of element must be unchanged");
     }
-    return Tensor(this->data_, new_shape);
+
+    Tensor reshapedTensor(this->data_, new_shape);
+    if (this->requires_grad_) {
+        reshapedTensor.set_requires_grad(true);
+        reshapedTensor.grad_fn_ = std::make_shared<ReshapeBackward>(*this);
+    }
+    return reshapedTensor;
 }
 
 Tensor Tensor::Transpose(const Shape& axis) const {
@@ -59,5 +65,11 @@ Tensor Tensor::Transpose(const Shape& axis) const {
         transposedData[index] = data_[src_index];
     }
 
-    return Tensor(transposedData, transposedShape);
+    // return Tensor(transposedData, transposedShape);
+    Tensor transposedTensor(transposedData, transposedShape);
+    if (this->requires_grad_) {
+        transposedTensor.set_requires_grad(true);
+        transposedTensor.grad_fn_ = std::make_shared<TransposeBackward>(*this, f_axes);
+    }
+    return transposedTensor;
 }
