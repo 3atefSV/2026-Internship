@@ -20,7 +20,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         -Wpedantic
         -O3             # Maximum optimization level for speed
         -march=native   # Enable CPU-specific SIMD instructions (AVX/AVX2)
-        -ffast-math     # Allow aggressive floating-point optimizations
     )
     
     # Link OpenMP flags
