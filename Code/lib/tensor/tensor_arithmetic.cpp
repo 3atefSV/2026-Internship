@@ -4,6 +4,7 @@
 #include <cmath>
 #include <functional>
 #include <stdexcept>
+#include <omp.h>
 
 // ============================= Autograd Helper =============================
 template <typename BackwardOp>
@@ -21,18 +22,60 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
     Shape result_shape = broadcast_shape(shape_, other.shape_);
     Storage resultData(compute_size(result_shape));
 
-    for (size_type i = 0; i < resultData.size(); ++i) {
-        const Shape output_index = unravel_index(i, result_shape);
-        const Shape lhs_index = broadcast_index(output_index, shape_);
-        const Shape rhs_index = broadcast_index(output_index, other.shape_);
-
-        const value_type lhs = data_[ravel_index(lhs_index, shape_)];
-        const value_type rhs = other.data_[ravel_index(rhs_index, other.shape_)];
-
-        if (check_division && rhs == 0) {
-            throw std::invalid_argument("Division by zero in tensor-tensor operation.");
+    // ========================================================================
+    // 1. FAST PATH: No broadcasting needed (Shapes are exactly the same)
+    // ========================================================================
+    if (shape_ == other.shape_) {
+        if (check_division) {
+            // Sequential loop for division to safely handle exceptions
+            for (size_type i = 0; i < resultData.size(); ++i) {
+                if (other.data_[i] == 0) {
+                    throw std::invalid_argument("Division by zero in tensor-tensor operation.");
+                }
+                resultData[i] = op(data_[i], other.data_[i]);
+            }
+        } else {
+            // Lightning-fast parallel SIMD execution
+            #pragma omp parallel for simd schedule(static)
+            for (size_type i = 0; i < resultData.size(); ++i) {
+                resultData[i] = op(data_[i], other.data_[i]);
+            }
         }
-        resultData[i] = op(lhs, rhs);
+        return Tensor(resultData, result_shape);
+    }
+
+    // ========================================================================
+    // 2. BROADCASTING PATH: Requires index mapping
+    // ========================================================================
+    if (check_division) {
+        // Sequential fallback to safely throw C++ exceptions
+        for (size_type i = 0; i < resultData.size(); ++i) {
+            const Shape output_index = unravel_index(i, result_shape);
+            const Shape rhs_index = broadcast_index(output_index, other.shape_);
+            const value_type rhs = other.data_[ravel_index(rhs_index, other.shape_)];
+            
+            if (rhs == 0) {
+                throw std::invalid_argument("Division by zero in tensor-tensor operation.");
+            }
+            
+            const Shape lhs_index = broadcast_index(output_index, shape_);
+            const value_type lhs = data_[ravel_index(lhs_index, shape_)];
+            resultData[i] = op(lhs, rhs);
+        }
+    } else {
+        // Parallel execution for broadcasting (Safe since there are no exceptions)
+        #pragma omp parallel for schedule(static)
+        for (size_type i = 0; i < resultData.size(); ++i) {
+            const Shape output_index = unravel_index(i, result_shape);
+            
+            const Shape lhs_index = broadcast_index(output_index, shape_);
+            const value_type lhs = data_[ravel_index(lhs_index, shape_)];
+            
+            const Shape rhs_index = broadcast_index(output_index, other.shape_);
+            const value_type rhs = other.data_[ravel_index(rhs_index, other.shape_)];
+            
+            resultData[i] = op(lhs, rhs);
+        }
     }
     return Tensor(resultData, result_shape);
 }
@@ -43,6 +86,9 @@ Tensor Tensor::apply_scalar_operation(value_type scalar, BinaryOp op, bool check
         throw std::invalid_argument("Division by zero in tensor-scalar operation.");
     }
     Storage resultData(data_.size());
+    
+    // Fully safe to parallelize as exceptions are handled beforehand
+    #pragma omp parallel for simd schedule(static)
     for (size_type i = 0; i < data_.size(); ++i) {
         resultData[i] = op(data_[i], scalar);
     }
@@ -56,7 +102,7 @@ Tensor Tensor::operator+(const Tensor& other) const {
 }
 
 Tensor Tensor::operator+(const value_type scalar) const {
-    // استخدم الدالة السريعة للحساب، واعمل Tensor وهمي صغير للـ Autograd Graph
+    // Utilize the fast scalar operation path, and construct a dummy tensor for the Autograd graph
     return wire_autograd<AddBackward>(
         *this, Tensor({scalar}, {1}),
         apply_scalar_operation(scalar, std::plus<value_type>(), false));
@@ -86,11 +132,14 @@ Tensor Tensor::operator-(const value_type scalar) const {
 }
 
 Tensor operator-(const Tensor::value_type scalar, const Tensor& tensor) {
-    // الطرح مش إبدالي، فهنا الحساب هيختلف شوية
+    // Subtraction is non-commutative, so it requires its own specialized loop
     Tensor::Storage resultData(tensor.data().size());
+    
+    #pragma omp parallel for simd schedule(static)
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
         resultData[i] = scalar - tensor.data()[i];
     }
+    
     Tensor result(resultData, tensor.shape());
     return wire_autograd<SubBackward>(Tensor({scalar}, {1}), tensor, result);
 }
@@ -141,12 +190,15 @@ Tensor Tensor::operator/(const value_type scalar) const {
 
 Tensor operator/(const Tensor::value_type scalar, const Tensor& tensor) {
     Tensor::Storage resultData(tensor.data().size());
+    
+    // Sequential loop due to exception throwing
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
         if (tensor.data()[i] == 0) {
             throw std::invalid_argument("Division by zero in scalar-tensor division.");
         }
         resultData[i] = scalar / tensor.data()[i];
     }
+    
     Tensor result(resultData, tensor.shape());
     return wire_autograd<DivBackward>(Tensor({scalar}, {1}), tensor, result);
 }
@@ -160,8 +212,11 @@ Tensor& Tensor::operator/=(const value_type scalar) {
     return *this;
 }
 
+// ============================= Math Operations =============================
 Tensor Tensor::log() const {
     Storage resultData(data_.size());
+    
+    // Sequential loop due to exception throwing
     for (size_type i = 0; i < data_.size(); ++i) {
         if (data_[i] <= 0.0f) {
             throw std::domain_error("Logarithm is undefined for non-positive tensor values.");
@@ -178,6 +233,9 @@ Tensor Tensor::clamp(const value_type min_value, const value_type max_value) con
     }
 
     Storage resultData(data_.size());
+    
+    // Fully safe for SIMD vectorization
+    #pragma omp parallel for simd schedule(qstatic)
     for (size_type i = 0; i < data_.size(); ++i) {
         resultData[i] = std::min(std::max(data_[i], min_value), max_value);
     }
