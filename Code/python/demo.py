@@ -68,5 +68,5 @@ for epoch in range(epochs):
 
 end_time = time.perf_counter()
 
-print("\n✅ Training finished!")
-print(f"⏱️ Total Training Time for 80,000 forward/backward passes: {end_time - start_time:.3f} seconds")
+print("\n Training finished!")
+print(f" Total Training Time for 80,000 forward/backward passes: {end_time - start_time:.3f} seconds")
