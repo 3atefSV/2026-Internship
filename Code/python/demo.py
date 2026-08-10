@@ -64,8 +64,7 @@ for epoch in range(epochs):
                 param.zero_grad()
         # --------------------------------------------------
 
-        if batch_idx == 0 or batch_idx == len(dataloader) - 1:
-            print(f"  Batch {batch_idx + 1:02d}/{len(dataloader)} | Loss: {loss[0]:.6f}")
+        print(f"  Batch {batch_idx + 1:02d}/{len(dataloader)} | Loss: {loss[0]:.6f}")
 
 end_time = time.perf_counter()
 
