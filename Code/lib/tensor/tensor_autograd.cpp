@@ -4,7 +4,6 @@
 
 void Tensor::set_requires_grad(bool req) {
     requires_grad_ = req;
-    // إذا تم تفعيل الـ tracking، نجهز الـ Gradient Tensor بـ أصفار
     if (requires_grad_ && !grad_) {
         grad_ = std::make_shared<Tensor>(shape_);
         grad_->fill(0.0f);
@@ -13,10 +12,9 @@ void Tensor::set_requires_grad(bool req) {
 
 void Tensor::zero_grad() {
     if (grad_) {
-        grad_->fill(0.0f);
+        grad_ = nullptr; 
     }
 }
-
 void Tensor::backward(const std::optional<Tensor>& gradient) {
     if (!requires_grad_)
         return;
