@@ -309,7 +309,7 @@ TEST(TensorArithmeticTest, ScalarDivideTensor) {
 TEST(TensorArithmeticTest, ScalarDivideTensorByZero) {
     Tensor a({1, 2, 0, 4}, {2, 2});
 
-    EXPECT_THROW(10.0f / a, std::invalid_argument);
+    EXPECT_THROW(10.0f / a, std::domain_error);
 }
 TEST(TensorArithmeticTest, ScalarMinusEmptyTensor) {
     Tensor empty;
