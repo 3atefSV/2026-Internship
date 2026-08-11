@@ -25,7 +25,7 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
         const value_type rhs = other.data_[rhs_flat];
 
         if (check_division && rhs == 0) {
-            throw std::invalid_argument("Division by zero in tensor-tensor operation.");
+            throw std::domain_error("Division by zero in tensor-tensor operation.");
         }
 
         resultData[i] = op(lhs, rhs);
