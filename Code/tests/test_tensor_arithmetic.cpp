@@ -249,7 +249,7 @@ TEST(TensorArithmeticTest, DivideScalar) {
 TEST(TensorArithmeticTest, DivideByZeroScalar) {
     Tensor a({1, 2, 3, 4}, {2, 2});
 
-    EXPECT_THROW(a / 0.0f, std::invalid_argument);
+    EXPECT_THROW(a / 0.0f, std::domain_error);
 }
 
 //
