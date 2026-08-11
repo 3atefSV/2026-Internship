@@ -37,7 +37,7 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
 template <typename BinaryOp>
 Tensor Tensor::apply_scalar_operation(value_type scalar, BinaryOp op, bool check_division) const {
     if (check_division && scalar == 0) {
-        throw std::invalid_argument("Division by zero in tensor-scalar operation.");
+        throw std::domain_error("Division by zero in tensor-scalar operation.");
     }
     Storage resultData(data_.size());
     for (size_type i = 0; i < data_.size(); ++i) {
