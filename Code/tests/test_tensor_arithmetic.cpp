@@ -229,7 +229,7 @@ TEST(TensorArithmeticTest, DivideTensorByZero) {
     Tensor a({10, 20, 30, 40}, {2, 2});
     Tensor b({1, 2, 0, 4}, {2, 2});
 
-    EXPECT_THROW(a / b, std::invalid_argument);
+    EXPECT_THROW(a / b, std::domain_error);
 }
 
 //
