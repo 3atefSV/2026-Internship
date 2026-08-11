@@ -67,7 +67,13 @@ TEST(TensorTest, OutputOperator) {
     Tensor tensor({1.0f, 2.0f, 3.0f, 4.0f}, {2, 2});
     std::ostringstream oss;
     oss << tensor;
-    std::string expected_output = "Tensor(shape=[2, 2], data=[1, 2, 3, 4])";
+    
+    std::string expected_output = 
+        "Tensor([\n"
+        "  [   1.0000,    2.0000],\n"
+        "  [   3.0000,    4.0000]\n"
+        "])";
+        
     EXPECT_EQ(oss.str(), expected_output);
 }
 

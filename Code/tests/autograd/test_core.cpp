@@ -21,7 +21,8 @@ TEST(AutogradCoreTest, ZeroGrad) {
     EXPECT_FLOAT_EQ(t.grad_->data()[0], 5.0f);
 
     t.zero_grad();
-    EXPECT_FLOAT_EQ(t.grad_->data()[0], 0.0f);
+    
+    EXPECT_EQ(t.grad_, nullptr); 
 }
 
 TEST(AutogradCoreTest, ScalarBackwardBaseCase) {

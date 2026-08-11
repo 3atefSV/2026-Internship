@@ -235,7 +235,7 @@ Tensor Tensor::clamp(const value_type min_value, const value_type max_value) con
     Storage resultData(data_.size());
     
     // Fully safe for SIMD vectorization
-    #pragma omp parallel for simd schedule(qstatic)
+    #pragma omp parallel for simd schedule(static)
     for (size_type i = 0; i < data_.size(); ++i) {
         resultData[i] = std::min(std::max(data_[i], min_value), max_value);
     }
