@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <cstddef>
 #include <iosfwd>
 #include <string_view>
@@ -99,6 +100,14 @@ class Tensor {
     // ================= Matrix Multiplication ==========================
     [[nodiscard]] Tensor matmul(const Tensor&) const;
 
+    // Module -> 2
+    // Activation Functions
+    [[nodiscard]] Tensor relu() const;
+    [[nodiscard]] Tensor sigmoid() const;
+    [[nodiscard]] Tensor tanh() const;
+    [[nodiscard]] Tensor gelu() const;
+    [[nodiscard]] Tensor softmax(int dim = -1) const;
+
   private:
     Storage data_;
     Shape shape_;
@@ -121,5 +130,5 @@ class Tensor {
 
     static Shape broadcast_index(const Shape& output_index, const Shape& input_shape);
     // ================= Helper Functions for matrix multiplication ==========================
-    [[nodiscard]] Shape extract_batch_shape(const Shape& shape) const;
+    static Shape extract_batch_shape(const Shape& shape);
 };

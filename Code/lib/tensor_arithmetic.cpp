@@ -25,7 +25,7 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
         const value_type rhs = other.data_[rhs_flat];
 
         if (check_division && rhs == 0) {
-            throw std::invalid_argument("Division by zero in tensor-tensor operation.");
+            throw std::domain_error("Division by zero in tensor-tensor operation.");
         }
 
         resultData[i] = op(lhs, rhs);
@@ -37,7 +37,7 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
 template <typename BinaryOp>
 Tensor Tensor::apply_scalar_operation(value_type scalar, BinaryOp op, bool check_division) const {
     if (check_division && scalar == 0) {
-        throw std::invalid_argument("Division by zero in tensor-scalar operation.");
+        throw std::domain_error("Division by zero in tensor-scalar operation.");
     }
     Storage resultData(data_.size());
     for (size_type i = 0; i < data_.size(); ++i) {
@@ -126,10 +126,11 @@ Tensor Tensor::operator/(const value_type scalar) const {
 }
 
 Tensor operator/(const Tensor::value_type scalar, const Tensor& tensor) {
+    const auto& tensor_data = tensor.data();
     Tensor::Storage resultData(tensor.data().size());
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
-        if (tensor.data()[i] == 0) {
-            throw std::invalid_argument("Division by zero in scalar-tensor division.");
+        if (tensor_data[i] == 0) {
+            throw std::domain_error("Division by zero in scalar-tensor division.");
         }
         resultData[i] = scalar / tensor.data()[i];
     }

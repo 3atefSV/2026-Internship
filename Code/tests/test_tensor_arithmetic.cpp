@@ -229,7 +229,7 @@ TEST(TensorArithmeticTest, DivideTensorByZero) {
     Tensor a({10, 20, 30, 40}, {2, 2});
     Tensor b({1, 2, 0, 4}, {2, 2});
 
-    EXPECT_THROW(a / b, std::invalid_argument);
+    EXPECT_THROW(a / b, std::domain_error);
 }
 
 //
@@ -249,7 +249,7 @@ TEST(TensorArithmeticTest, DivideScalar) {
 TEST(TensorArithmeticTest, DivideByZeroScalar) {
     Tensor a({1, 2, 3, 4}, {2, 2});
 
-    EXPECT_THROW(a / 0.0f, std::invalid_argument);
+    EXPECT_THROW(a / 0.0f, std::domain_error);
 }
 
 //
@@ -309,7 +309,7 @@ TEST(TensorArithmeticTest, ScalarDivideTensor) {
 TEST(TensorArithmeticTest, ScalarDivideTensorByZero) {
     Tensor a({1, 2, 0, 4}, {2, 2});
 
-    EXPECT_THROW(10.0f / a, std::invalid_argument);
+    EXPECT_THROW(10.0f / a, std::domain_error);
 }
 TEST(TensorArithmeticTest, ScalarMinusEmptyTensor) {
     Tensor empty;
