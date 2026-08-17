@@ -1,4 +1,6 @@
 #include "tensor/tensor.h"
+#include <algorithm>
+#include <cmath>
 #include <functional>
 #include <stdexcept>
 
@@ -143,4 +145,28 @@ Tensor& Tensor::operator/=(const Tensor& other) {
 Tensor& Tensor::operator/=(const value_type scalar) {
     *this = *this / scalar; // reuse the member function
     return *this;
+}
+
+Tensor Tensor::log() const {
+    Storage resultData(data_.size());
+    for (size_type i = 0; i < data_.size(); ++i) {
+        if (data_[i] <= 0.0f) {
+            throw std::domain_error("Logarithm is undefined for non-positive tensor values.");
+        }
+        resultData[i] = std::log(data_[i]);
+    }
+    return Tensor(resultData, shape_);
+}
+
+// Restrict every element to the closed interval [min_value, max_value].
+Tensor Tensor::clamp(const value_type min_value, const value_type max_value) const {
+    if (min_value > max_value) {
+        throw std::invalid_argument("Clamp bounds are inverted: min is greater than max.");
+    }
+
+    Storage resultData(data_.size());
+    for (size_type i = 0; i < data_.size(); ++i) {
+        resultData[i] = std::min(std::max(data_[i], min_value), max_value);
+    }
+    return Tensor(resultData, shape_);
 }

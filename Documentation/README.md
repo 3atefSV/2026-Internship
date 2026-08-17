@@ -177,6 +177,69 @@ Added simple neural-network-style layer components:
 
 These layers are organized in their own module folders and include dedicated unit tests.
 
+### Loss Module
+
+Added the loss criteria used to train the layers above:
+
+- `MSELoss`
+- `CrossEntropyLoss`
+- `BinaryCrossEntropyLoss`
+
+All three derive from an abstract `Loss` base class built to the same shape as `Layer`
+(pure-virtual `forward` plus a callable `operator()`), but with a two-input signature:
+
+```cpp
+MSELoss criterion;
+Tensor loss = criterion(predictions, targets);
+```
+
+`Loss` does not inherit from `Layer`, because `Layer::forward(x, training)` takes a single
+input. Its `forward` is `const`, since unlike `Dropout` no criterion carries state.
+
+#### Reduction Modes
+
+Every criterion accepts a `Reduction`, mirroring PyTorch:
+
+| Mode | Result |
+| --- | --- |
+| `Reduction::Mean` (default) | scalar tensor of shape `{1}` |
+| `Reduction::Sum` | scalar tensor of shape `{1}` |
+| `Reduction::None` | the unreduced per-element / per-sample tensor |
+
+#### Formulas
+
+| Criterion | Formula | Input |
+| --- | --- | --- |
+| `MSELoss` | `mean((prediction - target)^2)` | any matching shapes |
+| `CrossEntropyLoss` | `-mean_i log_softmax(logits_i)[y_i]` | logits `{C}` or `{N, C}` + class indices |
+| `BinaryCrossEntropyLoss` | `-mean(y*log(p) + (1-y)*log(1-p))` | probabilities and labels in `[0, 1]` |
+
+Complexity is `O(n)` for `MSELoss` and `BinaryCrossEntropyLoss`, and `O(N * C)` for
+`CrossEntropyLoss`.
+
+#### Numerical Stability
+
+- `CrossEntropyLoss` applies the softmax internally and never composes `log(softmax(x))`.
+  It routes through `Tensor::log_softmax`, which uses the Log-Sum-Exp form
+  `log_softmax(x_i) = (x_i - m) - log(sum_j exp(x_j - m))` with `m = max_j x_j`.
+  Every exponent is therefore `<= 0`, so `exp()` cannot overflow, and the sum is always
+  `>= 1`, so its logarithm is always finite. Logits of `1e3` stay exact where the naive
+  composition returns `NaN` or `-inf`.
+- `BinaryCrossEntropyLoss` clips probabilities into `[eps, 1 - eps]` before any logarithm,
+  bounding a confidently-wrong element at `-log(eps)` (~16.1 for the default `1e-7`)
+  instead of letting a single `log(0) = -inf` poison the whole batch mean.
+- Criteria refuse to broadcast mismatched shapes. `{2, 1}` against `{2}` would silently
+  broadcast to `{2, 2}` under plain tensor arithmetic and yield a meaningless loss.
+
+#### New Tensor Operations
+
+The loss module required three tensor primitives, which were added to the tensor core
+rather than special-cased inside the criteria:
+
+- `Tensor::log_softmax(dim)` — stable fused log-softmax
+- `Tensor::log()` — element-wise natural logarithm, rejecting non-positive input
+- `Tensor::clamp(min, max)` — element-wise bounding, used for the BCE epsilon clipping
+
 ### New Files Added and Changed
 
 - `Code/include/activations/activations.h`
@@ -214,6 +277,42 @@ These layers are organized in their own module folders and include dedicated uni
 - `python/demo.py`
   - Added example scenarios demonstrating the implemented tensor and layer features.
 
+- `Code/include/losses/loss.h`
+  - Added the `Reduction` enum and the abstract `Loss` base class with its shared
+    reduction and validation helpers.
+
+- `Code/include/losses/mse_loss.h`
+- `Code/include/losses/cross_entropy_loss.h`
+- `Code/include/losses/binary_cross_entropy_loss.h`
+  - Added the three concrete criteria.
+
+- `Code/lib/losses/loss.cpp`
+  - Implemented the shared reduction and shape/emptiness validation.
+
+- `Code/lib/losses/mse_loss.cpp`
+- `Code/lib/losses/cross_entropy_loss.cpp`
+- `Code/lib/losses/binary_cross_entropy_loss.cpp`
+  - Implemented the criteria on top of existing tensor arithmetic.
+
+- `Code/lib/tensor/Tensor_ActivationOps.cpp`
+  - Added `Tensor::log_softmax` next to `Tensor::softmax`, plus a shared `normalize_dim`
+    helper for resolving negative dimensions.
+
+- `Code/lib/tensor/tensor_arithmetic.cpp`
+  - Added `Tensor::log` and `Tensor::clamp`.
+
+- `Code/bindings/loss.cpp`
+  - Exposed `Reduction` and all three criteria to Python.
+
+- `Code/tests/losses/test_mse_loss.cpp`
+- `Code/tests/losses/test_cross_entropy_loss.cpp`
+- `Code/tests/losses/test_binary_cross_entropy_loss.cpp`
+- `Code/tests/tensor/test_tensor_log_softmax.cpp`
+  - Added unit tests for the criteria and the new tensor primitives.
+
+- `python/loss.py`
+  - Added a demo covering every criterion, reduction mode and both target forms.
+
 ### Problems encountered and fixed
 
 - The original transpose implementation only handled 2D tensors and rejected higher-rank tensors.
@@ -242,9 +341,13 @@ Coverage includes:
 - Linear layer behavior
 - Dropout layer behavior
 - Sequential module composition
+- Stable log-softmax, element-wise log and clamp
+- Loss values, reduction modes and batch handling
+- Loss input validation (mismatched shapes, invalid class indices, out-of-range probabilities)
+- Numerical stability under very large and very negative logits
+- BCE epsilon clipping
 
-
-The full suite currently reports 76 passing tests, and the Python demo runs successfully.
+The full suite currently reports 168 passing tests, and the Python demos run successfully.
 
 ---
 
@@ -273,6 +376,11 @@ Code/
 ├── include/
 │   ├── activations/
 │   │   └── activations.h
+│   ├── losses/
+│   │   ├── binary_cross_entropy_loss.h
+│   │   ├── cross_entropy_loss.h
+│   │   ├── loss.h
+│   │   └── mse_loss.h
 │   └── tensor/
 │       └── tensor.h
 │
@@ -283,6 +391,11 @@ Code/
 │   │   ├── dropout.cpp
 │   │   ├── linear.cpp
 │   │   └── sequential.cpp
+│   ├── losses/
+│   │   ├── binary_cross_entropy_loss.cpp
+│   │   ├── cross_entropy_loss.cpp
+│   │   ├── loss.cpp
+│   │   └── mse_loss.cpp
 │   └── tensor/
 │       ├── Tensor_ActivationOps.cpp
 │       ├── tensor_access.cpp
@@ -297,6 +410,10 @@ Code/
 │   │   ├── test_dropout.cpp
 │   │   ├── test_linear.cpp
 │   │   └── test_sequential.cpp
+│   ├── losses/
+│   │   ├── test_binary_cross_entropy_loss.cpp
+│   │   ├── test_cross_entropy_loss.cpp
+│   │   └── test_mse_loss.cpp
 │   ├── tensor/
 │   │   ├── test_tensor_arithmetic.cpp
 │   │   ├── test_tensor_broadcast.cpp
@@ -304,10 +421,12 @@ Code/
 │   │   ├── test_tensor_properties.cpp
 │   │   ├── test_tensor_reduction.cpp
 │   │   ├── test_tensor_shapeOps.cpp
+│   │   ├── test_tensor_log_softmax.cpp
 │   │   └── test_tensor_activations.cpp
 │   └── CMakeLists.txt
 ├── python/
-│   └── demo.py
+│   ├── demo.py
+│   └── loss.py
 └── CMakeLists.txt
 ```
 
