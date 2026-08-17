@@ -25,7 +25,4 @@ class CrossEntropyLoss : public Loss {
   private:
     // Validate the rank of the logits and report how many classes they hold.
     static Tensor::size_type check_logits(const Tensor& logits);
-
-    // Validate and convert float-encoded class indices into real indices.
-    static IndexList to_index_list(const Tensor& targets, Tensor::size_type num_classes);
 };
