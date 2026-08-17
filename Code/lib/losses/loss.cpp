@@ -1,6 +1,7 @@
 #include "losses/loss.h"
 #include <stdexcept>
 #include <string>
+#include <string_view>
 
 // ============================================================================
 // Base Loss Implementation
@@ -9,11 +10,13 @@ namespace {
 
 std::string shape_to_string(const Tensor::Shape& shape) {
     std::string text = "(";
-    for (Tensor::size_type i = 0; i < shape.size(); ++i) {
-        if (i > 0) {
+    bool first = true;
+    for (const auto dim : shape) {
+        if (!first) {
             text += ", ";
         }
-        text += std::to_string(shape[i]);
+        text += std::to_string(dim);
+        first = false;
     }
     text += ')';
     return text;
@@ -30,12 +33,14 @@ Tensor Loss::reduce(const Tensor& values) const {
         return values;
 
     case Reduction::Mean:
-    default:
         return Tensor({values.mean()}, Tensor::Shape{1});
+
+    default:
+        throw std::invalid_argument("Unknown reduction mode.");
     }
 }
 
-void Loss::check_same_shape(const Tensor& prediction, const Tensor& target, const char* name) {
+void Loss::check_same_shape(const Tensor& prediction, const Tensor& target, std::string_view name) {
     if (prediction.shape() != target.shape()) {
         throw std::invalid_argument(
             std::string(name) + ": prediction shape " + shape_to_string(prediction.shape()) +
@@ -43,7 +48,7 @@ void Loss::check_same_shape(const Tensor& prediction, const Tensor& target, cons
     }
 }
 
-void Loss::check_not_empty(const Tensor& tensor, const char* name) {
+void Loss::check_not_empty(const Tensor& tensor, std::string_view name) {
     if (tensor.empty()) {
         throw std::invalid_argument(std::string(name) + " must not be empty.");
     }
