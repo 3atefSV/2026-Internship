@@ -1,6 +1,7 @@
 #include "losses/binary_cross_entropy_loss.h"
 #include <stdexcept>
 #include <string>
+#include <string_view>
 
 BinaryCrossEntropyLoss::BinaryCrossEntropyLoss(Reduction reduction, Tensor::value_type epsilon)
     : Loss(reduction), epsilon_(epsilon) {
@@ -37,7 +38,7 @@ Tensor BinaryCrossEntropyLoss::forward(const Tensor& probabilities, const Tensor
     return reduce((positive_term + negative_term) * -1.0f);
 }
 
-void BinaryCrossEntropyLoss::check_in_unit_interval(const Tensor& tensor, const char* name) {
+void BinaryCrossEntropyLoss::check_in_unit_interval(const Tensor& tensor, std::string_view name) {
     for (Tensor::size_type i = 0; i < tensor.size(); ++i) {
         const Tensor::value_type value = tensor[i];
 
