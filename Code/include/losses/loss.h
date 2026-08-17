@@ -14,9 +14,9 @@ class Loss {
   public:
     explicit Loss(Reduction reduction = Reduction::Mean) : reduction_(reduction) {}
 
-    Loss(const Loss&) = default;
+    Loss(const Loss&) = delete;
 
-    Loss& operator=(const Loss&) = default;
+    Loss& operator=(const Loss&) = delete;
 
     virtual ~Loss() = default;
 
