@@ -17,7 +17,7 @@ std::string format_shape(const Tensor::Shape& shape) {
     s += "]";
     return s;
 }
-}
+} //namespace
 
 // ============================================================================
 // Cross Entropy Loss Implementation
@@ -29,8 +29,8 @@ Tensor::size_type CrossEntropyLoss::check_logits(const Tensor& logits) {
         throw std::invalid_argument("CrossEntropyLoss expects logits of shape {num_classes} or "
                                     "{batch_size, num_classes}, but got a " +
                                     std::to_string(logits.ndim()) +
-                                    "-dimensional tensor of shape " +format_shape(logits.shape())
-                                    + '.');
+                                    "-dimensional tensor of shape " + format_shape(logits.shape()) +
+                                    '.');
     }
 
     return logits.shape()[logits.ndim() - 1];
