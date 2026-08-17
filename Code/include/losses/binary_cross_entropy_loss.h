@@ -2,6 +2,7 @@
 
 #include "losses/loss.h"
 #include "tensor/tensor.h"
+#include <string_view>
 
 class BinaryCrossEntropyLoss : public Loss {
   public:
@@ -17,7 +18,7 @@ class BinaryCrossEntropyLoss : public Loss {
 
   private:
     // Check that all values in the tensor lie in the unit interval [0, 1].
-    static void check_in_unit_interval(const Tensor& tensor, const char* name);
+    static void check_in_unit_interval(const Tensor& tensor, std::string_view name);
 
     Tensor::value_type epsilon_;
 };
