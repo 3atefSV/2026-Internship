@@ -17,7 +17,7 @@ std::string format_shape(const Tensor::Shape& shape) {
     s += "]";
     return s;
 }
-} //namespace
+} // namespace
 
 // ============================================================================
 // Cross Entropy Loss Implementation
