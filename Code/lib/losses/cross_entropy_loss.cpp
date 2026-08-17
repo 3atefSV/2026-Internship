@@ -28,8 +28,9 @@ Tensor::size_type CrossEntropyLoss::check_logits(const Tensor& logits) {
     if (logits.ndim() != 1 && logits.ndim() != 2) {
         throw std::invalid_argument("CrossEntropyLoss expects logits of shape {num_classes} or "
                                     "{batch_size, num_classes}, but got a " +
-                                    std::to_string(logits.ndim()) + "-dimensional tensor of shape " +
-                                    format_shape(logits.shape()) + '.');
+                                    std::to_string(logits.ndim()) +
+                                    "-dimensional tensor of shape " +format_shape(logits.shape())
+                                    + '.');
     }
 
     return logits.shape()[logits.ndim() - 1];
