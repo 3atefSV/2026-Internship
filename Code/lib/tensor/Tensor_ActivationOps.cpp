@@ -25,8 +25,8 @@ Tensor::size_type normalize_dim(int dim, Tensor::size_type ndim) {
     }
 
     if (normalized_dim < 0 || normalized_dim >= static_cast<int>(ndim)) {
-       throw std::invalid_argument("Dimension out of range (got " + std::to_string(dim) +
-                                   " for tensor with " + std::to_string(ndim) + " dimensions).");
+        throw std::invalid_argument("Dimension out of range (got " + std::to_string(dim) +
+                                    " for tensor with " + std::to_string(ndim) + " dimensions).");
     }
 
     return static_cast<Tensor::size_type>(normalized_dim);
