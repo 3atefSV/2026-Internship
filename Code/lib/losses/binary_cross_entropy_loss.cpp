@@ -43,9 +43,9 @@ void BinaryCrossEntropyLoss::check_in_unit_interval(const Tensor& tensor, std::s
     const auto max_value = tensor.max();
 
     if (!(min_val >= 0.0f) || !(max_val <= 1.0f)) {
-        throw std::invalid_argument(
-            std::string(name) + " must all lie between 0 and 1. "
-            "Found min: " + std::to_string(min_val) +
-            ", max: " + std::to_string(max_val));
+        throw std::invalid_argument(std::string(name) +
+                                    " must all lie between 0 and 1. "
+                                    "Found min: " +
+                                    std::to_string(min_val) + ", max: " + std::to_string(max_val));
     }
 }
