@@ -1,8 +1,9 @@
 #pragma once
 
 #include "tensor/tensor.h"
+#include <string_view>
 
-// Controls how the per-element (or per-sample) losses are collapsed into the
+// Controls how the per-element (or per-sample) losses are collapsed into the final scalar valuess
 enum class Reduction {
     Mean, // average of all values
     Sum,  // sum of all values
@@ -32,7 +33,7 @@ class Loss {
 
     static void check_same_shape(const Tensor& prediction, const Tensor& target, const char* name);
 
-    static void check_not_empty(const Tensor& tensor, const char* name);
+    static void check_not_empty(const Tensor& tensor, std::string_view name);
 
   private:
     Reduction reduction_;
