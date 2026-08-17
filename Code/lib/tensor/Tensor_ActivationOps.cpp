@@ -19,7 +19,7 @@ Tensor::value_type sigmoid_stable(Tensor::value_type x) {
 
 // Resolve a possibly negative (Python-style) dimension into a valid axis index.
 Tensor::size_type normalize_dim(int dim, Tensor::size_type ndim) {
-    Tensor::size_type normalized_dim = dim;
+    int normalized_dim = dim;
     if (normalized_dim < 0) {
         normalized_dim += static_cast<int>(ndim);
     }
