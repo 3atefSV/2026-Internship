@@ -31,7 +31,8 @@ class Loss {
   protected:
     [[nodiscard]] Tensor reduce(const Tensor& values) const;
 
-    static void check_same_shape(const Tensor& prediction, const Tensor& target, std::string_view name);
+    static void check_same_shape(const Tensor& prediction, const Tensor& target,
+                                 std::string_view name);
 
     static void check_not_empty(const Tensor& tensor, std::string_view name);
 
