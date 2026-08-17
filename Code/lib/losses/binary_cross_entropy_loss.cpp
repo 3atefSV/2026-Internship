@@ -39,13 +39,13 @@ Tensor BinaryCrossEntropyLoss::forward(const Tensor& probabilities, const Tensor
 }
 
 void BinaryCrossEntropyLoss::check_in_unit_interval(const Tensor& tensor, std::string_view name) {
-    for (Tensor::size_type i = 0; i < tensor.size(); ++i) {
-        const Tensor::value_type value = tensor[i];
+    const auto min_value = tensor.min();
+    const auto max_value = tensor.max();
 
-        if (!(value >= 0.0f) || !(value <= 1.0f)) { // also rejects NaN
-            throw std::invalid_argument(std::string(name) +
-                                        " must all lie between 0 and 1, but got " +
-                                        std::to_string(value) + '.');
-        }
+    if (!(min_val >= 0.0f) || !(max_val <= 1.0f)) {
+        throw std::invalid_argument(
+            std::string(name) + " must all lie between 0 and 1. "
+            "Found min: " + std::to_string(min_val) +
+            ", max: " + std::to_string(max_val));
     }
 }
