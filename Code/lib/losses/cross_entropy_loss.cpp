@@ -1,7 +1,23 @@
 #include "losses/cross_entropy_loss.h"
 #include <cmath>
+#include <sstream>
 #include <stdexcept>
 #include <string>
+
+namespace {
+// Helper function to format Tensor shape as a readable string like [3, 2, 4]
+std::string format_shape(const Tensor::Shape& shape) {
+    std::string s = "[";
+    for (std::size_t i = 0; i < shape.size(); ++i) {
+        s += std::to_string(shape[i]);
+        if (i + 1 < shape.size()) {
+            s += ", ";
+        }
+    }
+    s += "]";
+    return s;
+}
+}
 
 // ============================================================================
 // Cross Entropy Loss Implementation
@@ -12,7 +28,8 @@ Tensor::size_type CrossEntropyLoss::check_logits(const Tensor& logits) {
     if (logits.ndim() != 1 && logits.ndim() != 2) {
         throw std::invalid_argument("CrossEntropyLoss expects logits of shape {num_classes} or "
                                     "{batch_size, num_classes}, but got a " +
-                                    std::to_string(logits.ndim()) + "-dimensional tensor.");
+                                    std::to_string(logits.ndim()) + "-dimensional tensor of shape " +
+                                    format_shape(logits.shape()) + '.');
     }
 
     return logits.shape()[logits.ndim() - 1];
@@ -57,9 +74,9 @@ Tensor CrossEntropyLoss::forward(const Tensor& logits, const Tensor& targets) co
                                     " classes.");
         }
 
-        const Tensor::Shape index = batched ? Tensor::Shape{sample, target} : Tensor::Shape{target};
-
-        per_sample[sample] = -log_probabilities(index);
+        // Direct flat-index access avoids std::vector allocation on every iteration
+        const Tensor::size_type flat_index = sample * num_classes + target;
+        per_sample[sample] = -log_probabilities[flat_index];
     }
 
     return reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
@@ -90,9 +107,9 @@ Tensor CrossEntropyLoss::forward(const Tensor& logits, const IndexList& targets)
                                     " classes.");
         }
 
-        const Tensor::Shape index = batched ? Tensor::Shape{sample, target} : Tensor::Shape{target};
-
-        per_sample[sample] = -log_probabilities(index);
+        // Direct flat-index access avoids std::vector allocation on every iteration
+        const Tensor::size_type flat_index = sample * num_classes + target;
+        per_sample[sample] = -log_probabilities[flat_index];
     }
 
     return reduce(Tensor(per_sample, Tensor::Shape{batch_size}));
