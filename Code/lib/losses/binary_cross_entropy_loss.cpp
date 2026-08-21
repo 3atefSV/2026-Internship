@@ -1,4 +1,5 @@
 #include "losses/binary_cross_entropy_loss.h"
+#include "autograd/loss_function.h"
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -35,7 +36,14 @@ Tensor BinaryCrossEntropyLoss::forward(const Tensor& probabilities, const Tensor
     const Tensor positive_term = targets * clipped.log();
     const Tensor negative_term = (1.0f - targets) * (1.0f - clipped).log();
 
-    return reduce((positive_term + negative_term) * -1.0f);
+    // return reduce((positive_term + negative_term) * -1.0f);
+    Tensor result = reduce((positive_term + negative_term) * -1.0f);
+    if (probabilities.requires_grad() || targets.requires_grad()) {
+        result.set_requires_grad(true);
+        result.grad_fn_ =
+            std::make_shared<BCEBackward>(probabilities, targets, reduction(), epsilon_);
+    }
+    return result;
 }
 
 void BinaryCrossEntropyLoss::check_in_unit_interval(const Tensor& tensor, std::string_view name) {
