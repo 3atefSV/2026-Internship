@@ -22,6 +22,10 @@ add_library(Tensor
     tensor/tensor_autograd.cpp
     autograd/function.cpp
     autograd/loss_function.cpp
+    optimizers/optimizer.cpp
+    optimizers/sgd.cpp
+    optimizers/adam.cpp
+    optimizers/adamw.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -36,6 +40,7 @@ target_include_directories(Tensor
         ${PROJECT_SOURCE_DIR}/include/losses
         ${PROJECT_SOURCE_DIR}/include/data
         ${PROJECT_SOURCE_DIR}/include/autograd
+        ${PROJECT_SOURCE_DIR}/include/optimizers
 )
 
 set_target_properties(Tensor PROPERTIES

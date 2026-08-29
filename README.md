@@ -10,7 +10,7 @@ The C++ backend is exposed to Python through **PyBind11**, providing a familiar 
 
 ## 🚀 Overview
 
-TinyTorch is designed to provide a deep understanding of how modern deep learning frameworks operate under the hood. It features a fully functional dynamic N-dimensional tensor core, neural network layers, mathematically stable loss functions, a robust data loading pipeline, and a dynamic Autograd engine for reverse-mode automatic differentiation.
+TinyTorch is designed to provide a deep understanding of how modern deep learning frameworks operate under the hood. It features a fully functional dynamic N-dimensional tensor core, neural network layers, mathematically stable loss functions, a robust data loading pipeline, a dynamic Autograd engine for reverse-mode automatic differentiation, and a family of optimizers (SGD, Adam, AdamW) that train the models.
 
 The C++ backend is seamlessly exposed to Python using PyBind11, allowing you to write familiar, Pythonic deep learning code.
 
@@ -34,6 +34,12 @@ The overall architecture can be summarized as:
       Loss ◄────────────┘          DataLoader
         │                              │
         └──────────────┬───────────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │   Optimizers    │  ◄── SGD / Adam / AdamW
+              └────────┬────────┘
+                       │
                        ▼
                   Training Loop
 ```
@@ -50,6 +56,7 @@ Detailed documentation is organized into separate files under the `Documentation
 | 🧠 Neural Networks | [neural_network.md](Documentation/neural_network.md)   | Layers, activations, Sequential containers, and loss functions                        |
 | ⚙️ Autograd        | [autograd_engine.md](Documentation/autograd_engine.md) | Computation graphs, gradient tracking, and reverse-mode automatic differentiation     |
 | 📊 Data Pipeline   | [data_pipeline.md](Documentation/data_pipeline.md)     | Datasets, image loading, transforms, batching, and DataLoader                         |
+| ⚙️ Optimizers      | [optimizers.md](Documentation/optimizers.md)           | SGD, Adam, and AdamW update rules, weight decay, and memory-efficient step()          |
 
 ---
 
@@ -64,7 +71,8 @@ TinyTorch/
 │   ├── tensor_core.md
 │   ├── neural_network.md
 │   ├── autograd_engine.md
-│   └── data_pipeline.md
+│   ├── data_pipeline.md
+│   └── optimizers.md
 │
 └── Code/
     ├── CMakeLists.txt
@@ -92,6 +100,11 @@ TinyTorch/
     │   │   ├── mse_loss.h
     │   │   ├── cross_entropy_loss.h
     │   │   └── ...
+    │   ├── optimizers/
+    │   │   ├── optimizer.h
+    │   │   ├── sgd.h
+    │   │   ├── adam.h
+    │   │   └── adamw.h
     │   └── tensor/
     │       └── tensor.h
     │
@@ -102,6 +115,7 @@ TinyTorch/
     │   ├── data/
     │   ├── layer/
     │   ├── losses/
+    │   ├── optimizers/
     │   └── tensor/
     │
     ├── bindings/                   # PyBind11 Bindings
@@ -114,6 +128,7 @@ TinyTorch/
     │   ├── data/
     │   ├── layer/
     │   ├── losses/
+    │   ├── optimizers/
     │   └── transforms/
     │
     ├── python/                     # Python Frontend & Examples
@@ -122,6 +137,7 @@ TinyTorch/
     │   ├── dataset.py
     │   ├── layer.py
     │   ├── loss.py
+    │   ├── optimizers.py
     │   ├── tensor.py
     │   └── transforms.py
     │
@@ -132,6 +148,7 @@ TinyTorch/
         ├── data/
         ├── layer/
         ├── losses/
+        ├── optimizers/
         └── tensor/
 ```
 
@@ -194,6 +211,7 @@ cd ..
 python3 python/tensor.py
 python3 python/loss.py
 python3 python/autograd.py
+python3 python/optimizers.py
 ```
 
 These examples demonstrate the Python interface exposed by the C++ backend through PyBind11.
@@ -213,6 +231,7 @@ tests/
 ├── data/
 ├── layer/
 ├── losses/
+├── optimizers/
 └── tensor/
 ```
 
@@ -328,6 +347,8 @@ The project focuses on understanding:
 * Reverse-mode automatic differentiation
 * Dynamic computation graphs
 * Gradient propagation and accumulation
+* Optimization algorithms (SGD, Adam, AdamW)
+* Memory-efficient, allocation-free parameter updates
 * Dataset abstractions
 * Data preprocessing
 * Mini-batch data loading
@@ -338,7 +359,7 @@ The project focuses on understanding:
 
 # 📌 Current Status
 
-TinyTorch currently provides a functional foundation covering the complete path from data loading to automatic differentiation:
+TinyTorch currently provides a functional foundation covering the complete path from data loading through optimization:
 
 ```text
 Raw Data
@@ -366,6 +387,9 @@ Autograd
    │
    ▼
 Gradients
+   │
+   ▼
+Optimizer (SGD / Adam / AdamW)
 ```
 
 The architecture is intentionally modular so that additional layers, operations, optimizers, datasets, and hardware-specific backends can be added without redesigning the existing core.
