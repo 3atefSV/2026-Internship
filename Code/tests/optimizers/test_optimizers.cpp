@@ -31,7 +31,7 @@ void set_grads(Params& p) {
     (*p.b.grad_)[0] = 0.3f;
 }
 
-}  // namespace
+} // namespace
 
 // ================= Base Optimizer =================
 

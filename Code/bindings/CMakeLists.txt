@@ -19,6 +19,7 @@ pybind11_add_module(tinytorch
     data/dataloader.cpp
     transforms/transforms.cpp
     optimizers/optimizers.cpp
+    training/trainer.cpp
 )
 
 target_link_libraries(tinytorch

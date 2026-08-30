@@ -26,6 +26,9 @@ add_library(Tensor
     optimizers/sgd.cpp
     optimizers/adam.cpp
     optimizers/adamw.cpp
+    training/trainer.cpp
+    training/scheduler.cpp
+    training/clip_grad.cpp
 )
 set_target_properties(Tensor PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -41,6 +44,7 @@ target_include_directories(Tensor
         ${PROJECT_SOURCE_DIR}/include/data
         ${PROJECT_SOURCE_DIR}/include/autograd
         ${PROJECT_SOURCE_DIR}/include/optimizers
+        ${PROJECT_SOURCE_DIR}/include/training
 )
 
 set_target_properties(Tensor PROPERTIES
