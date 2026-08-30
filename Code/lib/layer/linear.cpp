@@ -30,18 +30,18 @@ Linear::Linear(Tensor::size_type in_features, Tensor::size_type out_features, bo
         weight_.data()[i] = d(gen) * scale;
     }
 
-    // Populate biases if used
     if (use_bias_) {
         bias_.fill(0.0f);
+        bias_.set_requires_grad(true);
     }
-}
 
+    weight_.set_requires_grad(true);
+}
 Tensor Linear::forward(const Tensor& x, bool /*training*/) {
-    Tensor output = x.matmul(weight_);
     if (use_bias_) {
-        output += bias_;
+        return x.matmul(weight_) + bias_;
     }
-    return output;
+    return x.matmul(weight_);
 }
 
 Layer::ParamList Linear::parameters() {

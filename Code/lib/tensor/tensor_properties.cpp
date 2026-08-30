@@ -1,8 +1,8 @@
 #include "tensor/tensor.h"
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 std::ostream& operator<<(std::ostream& os, const Tensor& tensor) {
-if (tensor.data().empty()) {
+    if (tensor.data().empty()) {
         os << "Tensor([])";
         return os;
     }
@@ -16,18 +16,17 @@ if (tensor.data().empty()) {
             }
         }
         os << "])";
-    } 
-    else if (tensor.ndim() == 2) {
+    } else if (tensor.ndim() == 2) {
         size_t rows = tensor.shape()[0];
         size_t cols = tensor.shape()[1];
-        
+
         os << "Tensor([\n";
         for (size_t i = 0; i < rows; ++i) {
             os << "  [";
             for (size_t j = 0; j < cols; ++j) {
-                os << std::setw(9) << std::fixed << std::setprecision(4) 
+                os << std::setw(9) << std::fixed << std::setprecision(4)
                    << tensor.data()[i * cols + j];
-                
+
                 if (j < cols - 1) {
                     os << ", ";
                 }
@@ -38,8 +37,7 @@ if (tensor.data().empty()) {
             }
         }
         os << "\n])";
-    } 
-    else {
+    } else {
         os << "Tensor(shape=[";
         for (size_t i = 0; i < tensor.shape().size(); ++i) {
             os << tensor.shape()[i];
@@ -47,9 +45,9 @@ if (tensor.data().empty()) {
                 os << ", ";
             }
         }
-        os << "], data=...)"; 
+        os << "], data=...)";
     }
-    
+
     return os;
 }
 
