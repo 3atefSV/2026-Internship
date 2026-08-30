@@ -1,15 +1,57 @@
 #include "autograd/function.h"
 
 // ================= AddBackward =================
+// ================= AddBackward =================
 AddBackward::AddBackward(const Tensor& a, const Tensor& b) { saved_tensors = {a, b}; }
+
 std::vector<Tensor> AddBackward::apply(const Tensor& grad_output) {
-    return {grad_output, grad_output}; // ∂(a+b)/∂a = 1, ∂(a+b)/∂b = 1
+    Tensor grad_a = grad_output;
+    Tensor grad_b = grad_output;
+
+    // 1. Handling Broadcasting for Tensor 'A' (e.g., if A was a scalar)
+    if (saved_tensors[0].size() < grad_output.size()) {
+        Tensor::Storage reduced_a(saved_tensors[0].size(), 0.0f);
+        for (size_t i = 0; i < grad_output.size(); ++i) {
+            reduced_a[i % reduced_a.size()] += grad_output.data()[i];
+        }
+        grad_a = Tensor(reduced_a, saved_tensors[0].shape());
+    }
+
+    // 2. Handling Broadcasting for Tensor 'B' (This is the Bias Fix!)
+    if (saved_tensors[1].size() < grad_output.size()) {
+        Tensor::Storage reduced_b(saved_tensors[1].size(), 0.0f);
+        for (size_t i = 0; i < grad_output.size(); ++i) {
+            reduced_b[i % reduced_b.size()] += grad_output.data()[i];
+        }
+        grad_b = Tensor(reduced_b, saved_tensors[1].shape());
+    }
+
+    return {grad_a, grad_b};
 }
 
 // ================= SubBackward =================
 SubBackward::SubBackward(const Tensor& a, const Tensor& b) { saved_tensors = {a, b}; }
 std::vector<Tensor> SubBackward::apply(const Tensor& grad_output) {
-    return {grad_output, grad_output * -1.0f}; // ∂(a-b)/∂a = 1, ∂(a-b)/∂b = -1
+    Tensor grad_a = grad_output;
+    Tensor grad_b = grad_output * -1.0f; // ∂(a-b)/∂b = -1
+
+    if (saved_tensors[0].size() < grad_a.size()) {
+        Tensor::Storage reduced_a(saved_tensors[0].size(), 0.0f);
+        for (size_t i = 0; i < grad_a.size(); ++i) {
+            reduced_a[i % reduced_a.size()] += grad_a.data()[i];
+        }
+        grad_a = Tensor(reduced_a, saved_tensors[0].shape());
+    }
+
+    if (saved_tensors[1].size() < grad_b.size()) {
+        Tensor::Storage reduced_b(saved_tensors[1].size(), 0.0f);
+        for (size_t i = 0; i < grad_b.size(); ++i) {
+            reduced_b[i % reduced_b.size()] += grad_b.data()[i];
+        }
+        grad_b = Tensor(reduced_b, saved_tensors[1].shape());
+    }
+
+    return {grad_a, grad_b};
 }
 
 // ================= MulBackward =================
@@ -17,6 +59,23 @@ MulBackward::MulBackward(const Tensor& a, const Tensor& b) { saved_tensors = {a,
 std::vector<Tensor> MulBackward::apply(const Tensor& grad_output) {
     Tensor grad_a = grad_output * saved_tensors[1]; // ∂(a*b)/∂a = b
     Tensor grad_b = grad_output * saved_tensors[0]; // ∂(a*b)/∂b = a
+
+    if (saved_tensors[0].size() < grad_a.size()) {
+        Tensor::Storage reduced_a(saved_tensors[0].size(), 0.0f);
+        for (size_t i = 0; i < grad_a.size(); ++i) {
+            reduced_a[i % reduced_a.size()] += grad_a.data()[i];
+        }
+        grad_a = Tensor(reduced_a, saved_tensors[0].shape());
+    }
+
+    if (saved_tensors[1].size() < grad_b.size()) {
+        Tensor::Storage reduced_b(saved_tensors[1].size(), 0.0f);
+        for (size_t i = 0; i < grad_b.size(); ++i) {
+            reduced_b[i % reduced_b.size()] += grad_b.data()[i];
+        }
+        grad_b = Tensor(reduced_b, saved_tensors[1].shape());
+    }
+
     return {grad_a, grad_b};
 }
 
@@ -26,6 +85,23 @@ std::vector<Tensor> DivBackward::apply(const Tensor& grad_output) {
     Tensor b = saved_tensors[1];
     Tensor grad_a = grad_output / b;                                    // ∂(a/b)/∂a = 1/b
     Tensor grad_b = (grad_output * saved_tensors[0] * -1.0f) / (b * b); // ∂(a/b)/∂b = -a/b^2
+
+    if (saved_tensors[0].size() < grad_a.size()) {
+        Tensor::Storage reduced_a(saved_tensors[0].size(), 0.0f);
+        for (size_t i = 0; i < grad_a.size(); ++i) {
+            reduced_a[i % reduced_a.size()] += grad_a.data()[i];
+        }
+        grad_a = Tensor(reduced_a, saved_tensors[0].shape());
+    }
+
+    if (saved_tensors[1].size() < grad_b.size()) {
+        Tensor::Storage reduced_b(saved_tensors[1].size(), 0.0f);
+        for (size_t i = 0; i < grad_b.size(); ++i) {
+            reduced_b[i % reduced_b.size()] += grad_b.data()[i];
+        }
+        grad_b = Tensor(reduced_b, saved_tensors[1].shape());
+    }
+
     return {grad_a, grad_b};
 }
 

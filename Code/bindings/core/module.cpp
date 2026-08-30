@@ -10,4 +10,5 @@ PYBIND11_MODULE(tinytorch, m) {
     bind_transforms(m);
     bind_dataloader(m);
     bind_optimizers(m);
+    bind_training(m);
 }

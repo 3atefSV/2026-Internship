@@ -11,3 +11,4 @@ void bind_data(py::module_& m);
 void bind_transforms(py::module_& m);
 void bind_dataloader(py::module_& m);
 void bind_optimizers(py::module_& m);
+void bind_training(py::module_& m);

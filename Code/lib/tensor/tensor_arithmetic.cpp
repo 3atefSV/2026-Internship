@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
-#include <stdexcept>
 #include <omp.h>
+#include <stdexcept>
 
 // ============================= Autograd Helper =============================
 template <typename BackwardOp>
@@ -35,8 +35,8 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
                 resultData[i] = op(data_[i], other.data_[i]);
             }
         } else {
-            // Lightning-fast parallel SIMD execution
-            #pragma omp parallel for simd schedule(static)
+// Lightning-fast parallel SIMD execution
+#pragma omp parallel for simd schedule(static)
             for (size_type i = 0; i < resultData.size(); ++i) {
                 resultData[i] = op(data_[i], other.data_[i]);
             }
@@ -53,27 +53,27 @@ Tensor Tensor::apply_tensor_operation(const Tensor& other, BinaryOp op, bool che
             const Shape output_index = unravel_index(i, result_shape);
             const Shape rhs_index = broadcast_index(output_index, other.shape_);
             const value_type rhs = other.data_[ravel_index(rhs_index, other.shape_)];
-            
+
             if (rhs == 0) {
                 throw std::invalid_argument("Division by zero in tensor-tensor operation.");
             }
-            
+
             const Shape lhs_index = broadcast_index(output_index, shape_);
             const value_type lhs = data_[ravel_index(lhs_index, shape_)];
             resultData[i] = op(lhs, rhs);
         }
     } else {
-        // Parallel execution for broadcasting (Safe since there are no exceptions)
-        #pragma omp parallel for schedule(static)
+// Parallel execution for broadcasting (Safe since there are no exceptions)
+#pragma omp parallel for schedule(static)
         for (size_type i = 0; i < resultData.size(); ++i) {
             const Shape output_index = unravel_index(i, result_shape);
-            
+
             const Shape lhs_index = broadcast_index(output_index, shape_);
             const value_type lhs = data_[ravel_index(lhs_index, shape_)];
-            
+
             const Shape rhs_index = broadcast_index(output_index, other.shape_);
             const value_type rhs = other.data_[ravel_index(rhs_index, other.shape_)];
-            
+
             resultData[i] = op(lhs, rhs);
         }
     }
@@ -86,9 +86,9 @@ Tensor Tensor::apply_scalar_operation(value_type scalar, BinaryOp op, bool check
         throw std::invalid_argument("Division by zero in tensor-scalar operation.");
     }
     Storage resultData(data_.size());
-    
-    // Fully safe to parallelize as exceptions are handled beforehand
-    #pragma omp parallel for simd schedule(static)
+
+// Fully safe to parallelize as exceptions are handled beforehand
+#pragma omp parallel for simd schedule(static)
     for (size_type i = 0; i < data_.size(); ++i) {
         resultData[i] = op(data_[i], scalar);
     }
@@ -134,12 +134,12 @@ Tensor Tensor::operator-(const value_type scalar) const {
 Tensor operator-(const Tensor::value_type scalar, const Tensor& tensor) {
     // Subtraction is non-commutative, so it requires its own specialized loop
     Tensor::Storage resultData(tensor.data().size());
-    
-    #pragma omp parallel for simd schedule(static)
+
+#pragma omp parallel for simd schedule(static)
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
         resultData[i] = scalar - tensor.data()[i];
     }
-    
+
     Tensor result(resultData, tensor.shape());
     return wire_autograd<SubBackward>(Tensor({scalar}, {1}), tensor, result);
 }
@@ -190,7 +190,7 @@ Tensor Tensor::operator/(const value_type scalar) const {
 
 Tensor operator/(const Tensor::value_type scalar, const Tensor& tensor) {
     Tensor::Storage resultData(tensor.data().size());
-    
+
     // Sequential loop due to exception throwing
     for (Tensor::size_type i = 0; i < tensor.data().size(); ++i) {
         if (tensor.data()[i] == 0) {
@@ -198,7 +198,7 @@ Tensor operator/(const Tensor::value_type scalar, const Tensor& tensor) {
         }
         resultData[i] = scalar / tensor.data()[i];
     }
-    
+
     Tensor result(resultData, tensor.shape());
     return wire_autograd<DivBackward>(Tensor({scalar}, {1}), tensor, result);
 }
@@ -215,7 +215,7 @@ Tensor& Tensor::operator/=(const value_type scalar) {
 // ============================= Math Operations =============================
 Tensor Tensor::log() const {
     Storage resultData(data_.size());
-    
+
     // Sequential loop due to exception throwing
     for (size_type i = 0; i < data_.size(); ++i) {
         if (data_[i] <= 0.0f) {
@@ -233,9 +233,9 @@ Tensor Tensor::clamp(const value_type min_value, const value_type max_value) con
     }
 
     Storage resultData(data_.size());
-    
-    // Fully safe for SIMD vectorization
-    #pragma omp parallel for simd schedule(static)
+
+// Fully safe for SIMD vectorization
+#pragma omp parallel for simd schedule(static)
     for (size_type i = 0; i < data_.size(); ++i) {
         resultData[i] = std::min(std::max(data_[i], min_value), max_value);
     }

@@ -12,7 +12,7 @@ void Tensor::set_requires_grad(bool req) {
 
 void Tensor::zero_grad() {
     if (grad_) {
-        grad_ = nullptr; 
+        std::fill(grad_->data().begin(), grad_->data().end(), 0.0f);
     }
 }
 void Tensor::backward(const std::optional<Tensor>& gradient) {
