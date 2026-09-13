@@ -112,6 +112,12 @@ class Tensor {
     [[nodiscard]] Tensor gelu() const;
     [[nodiscard]] Tensor softmax(int dim = -1) const;
 
+    // Module -> 4
+    // Element-wise math used by the loss module
+    [[nodiscard]] Tensor log() const;
+    [[nodiscard]] Tensor clamp(value_type min_value, value_type max_value) const;
+    [[nodiscard]] Tensor log_softmax(int dim = -1) const;
+
   private:
     Storage data_;
     Shape shape_;

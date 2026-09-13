@@ -96,6 +96,9 @@ void bind_tensor(py::module_& m) {
         .def("tanh", &Tensor::tanh)
         .def("gelu", &Tensor::gelu)
         .def("softmax", &Tensor::softmax, py::arg("dim") = -1)
+        .def("log_softmax", &Tensor::log_softmax, py::arg("dim") = -1)
+        .def("log", &Tensor::log)
+        .def("clamp", &Tensor::clamp, py::arg("min"), py::arg("max"))
 
         // ================= Comparison =================
 
